@@ -4,6 +4,11 @@ An internal intelligence dashboard summarizing target market, competitor positio
 
 ---
 
+## 🔗 Live Deployment
+- **Interactive Live Site:** [https://jeswinjestin.github.io/securemojo-competitor-analysis/](https://jeswinjestin.github.io/securemojo-competitor-analysis/)
+
+---
+
 ## 🎯 Strategic Overview
 
 SecureMojo protects the **individual**, not just the device. Traditional antivirus tools protect system software, but 95% of breaches originate from human error, social engineering, and OSINT footprint exposure. SecureMojo builds a personal cyber protection layer for creators, founders, and professionals who have a high public profile.
