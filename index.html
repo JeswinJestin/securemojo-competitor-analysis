@@ -3,980 +3,1995 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecureMojo — Digital Presence & Competitor Analysis</title>
+<title>SecureMojo — Digital Presence & Competitor Dashboard</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  
   :root {
-    --bg:#0d0f12;--surface:#141720;--surface-2:#1c2030;--border:#252a38;
-    --text:#e8eaf0;--text-muted:#6b7280;--text-dim:#9ca3af;
-    --green:#00c97a;--green-dim:rgba(0,201,122,0.12);
-    --red:#ff4d6a;--red-dim:rgba(255,77,106,0.1);
-    --amber:#f59e0b;--amber-dim:rgba(245,158,11,0.1);
-    --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.1);
-    --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.1);
+    --bg: #090B0E;
+    --surface: #10141D;
+    --surface-hover: #171D2A;
+    --surface-card: #131924;
+    --border: #1E2638;
+    --border-hover: #2E3A54;
+    --text: #F8FAFC;
+    --text-secondary: #E2E8F0;
+    --text-muted: #94A3B8;
+    
+    --brand: #00E676; /* SecureMojo Neon Green */
+    --brand-glow: rgba(0, 230, 118, 0.15);
+    
+    --blue: #60A5FA; /* General Accents */
+    --blue-glow: rgba(96, 165, 250, 0.15);
+    
+    --purple: #A78BFA; /* Opportunities */
+    --purple-glow: rgba(167, 139, 250, 0.15);
+    
+    --amber: #F59E0B;
+    --amber-glow: rgba(245, 158, 11, 0.15);
+    --red: #FF4D6A;
+    --red-glow: rgba(255, 77, 106, 0.15);
+    
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;padding:48px 24px;max-width:980px;margin:0 auto;}
-  /* ---- HEADER ---- */
-  .doc-header{padding-bottom:40px;border-bottom:1px solid var(--border);margin-bottom:40px;}
-  .doc-meta{display:flex;align-items:center;gap:12px;margin-bottom:20px;font-size:12px;color:var(--text-muted);font-family:'Space Grotesk',sans-serif;letter-spacing:.05em;text-transform:uppercase;}
-  .doc-meta span{color:var(--border);}
-  .doc-title{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.25;}
-  .doc-subtitle{color:var(--text-muted);font-size:14px;max-width:580px;}
-  .research-badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 14px;font-size:12px;color:var(--text-dim);margin-top:16px;}
-  .research-badge strong{color:var(--text);font-weight:600;}
-  /* ---- TAGS ---- */
-  .tag{display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;font-family:'Space Grotesk',sans-serif;letter-spacing:.05em;text-transform:uppercase;}
-  .tag-green{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,201,122,.2);}
-  .tag-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,.2);}
-  .tag-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,.2);}
-  .tag-blue{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,.2);}
-  .tag-purple{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,.2);}
-  /* ---- SECTION ---- */
-  .section{margin-bottom:52px;}
-  .section-label{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-  .section-divider{height:1px;background:var(--border);margin:44px 0;}
-  /* ---- STAT GRID ---- */
-  .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
-  .stat-platform{font-size:11px;color:var(--text-muted);font-weight:500;margin-bottom:6px;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.06em;}
-  .stat-number{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px;}
-  .stat-note{font-size:11px;color:var(--text-muted);}
-  .stat-number.good{color:var(--green);}.stat-number.warn{color:var(--amber);}.stat-number.bad{color:var(--red);}
-  /* ---- INSIGHT BLOCKS ---- */
-  .insight-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-  .insight-block{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;}
-  .insight-block.full{grid-column:1/-1;}
-  .insight-block-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-  .insight-block ul{list-style:none;padding:0;}
-  .insight-block ul li{padding:5px 0;color:var(--text-dim);font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:8px;}
-  .insight-block ul li:last-child{border-bottom:none;}
-  .insight-block ul li::before{content:"→";color:var(--text-muted);flex-shrink:0;margin-top:1px;}
-  .insight-block.good-block{border-color:rgba(0,201,122,.2);background:rgba(0,201,122,.04);}
-  .insight-block.bad-block{border-color:rgba(255,77,106,.2);background:rgba(255,77,106,.04);}
-  .insight-block.amber-block{border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.04);}
-  .insight-block.blue-block{border-color:rgba(96,165,250,.2);background:rgba(96,165,250,.04);}
-  /* ---- COMPETITOR TABLE ---- */
-  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:16px;}
-  table.competitor-table{width:100%;border-collapse:collapse;font-size:13px;}
-  .competitor-table thead tr{background:var(--surface-2);}
-  .competitor-table th{padding:12px 16px;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;}
-  .competitor-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top;}
-  .competitor-table tr:last-child td{border-bottom:none;}
-  .competitor-table tr:hover td{background:rgba(255,255,255,.02);}
-  .company-name{font-weight:600;color:var(--text);font-size:13px;display:block;}
-  .company-tier{font-size:10px;color:var(--text-muted);margin-top:2px;}
-  .num{font-family:'Space Grotesk',sans-serif;color:var(--text);font-weight:500;}
-  .securemojo-row td{background:rgba(96,165,250,.04);}
-  /* ---- KEY FINDING ---- */
-  .key-finding{background:linear-gradient(135deg,rgba(0,201,122,.08) 0%,rgba(96,165,250,.06) 100%);border:1px solid rgba(0,201,122,.2);border-radius:10px;padding:24px 28px;margin-bottom:40px;}
-  .key-finding-label{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
-  .key-finding-text{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;color:var(--text);line-height:1.55;}
-  /* ---- MIX BAR ---- */
-  .mix-row{margin-bottom:12px;}
-  .mix-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-bottom:4px;}
-  .mix-bar{height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
-  .mix-fill{height:100%;border-radius:4px;transition:width .5s;}
-  .fill-green{background:var(--green);}.fill-blue{background:var(--blue);}.fill-purple{background:var(--purple);}.fill-amber{background:var(--amber);}
-  /* ---- SVG CHARTS ---- */
-  .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:16px;}
-  .chart-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
-  .chart-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px;}
-  svg text{font-family:'Space Grotesk','Inter',sans-serif;}
-  /* ---- COMPETITOR DEEP DIVE ---- */
-  .competitor-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
-  .competitor-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-  .cc-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .cc-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text);}
-  .cc-tagline{font-size:11px;color:var(--text-muted);margin-top:2px;}
-  .cc-body{padding:14px 18px;}
-  .cc-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;}
-  .cc-row:last-child{border-bottom:none;}
-  .cc-label{color:var(--text-muted);min-width:100px;}
-  .cc-value{color:var(--text-dim);text-align:right;max-width:180px;}
-  .cc-stat-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
-  .cc-stat{background:var(--surface-2);border-radius:6px;padding:8px 12px;text-align:center;}
-  .cc-stat-n{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text);}
-  .cc-stat-l{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;}
-  .color-swatch-row{display:flex;gap:6px;margin-bottom:8px;align-items:center;}
-  .color-swatch{width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,.1);}
-  /* ---- REC CARDS ---- */
-  .rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .rec-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
-  .rec-number{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.1em;margin-bottom:8px;}
-  .rec-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3;}
-  .rec-desc{font-size:13px;color:var(--text-dim);line-height:1.65;}
-  .rec-card.priority{border-color:rgba(0,201,122,.3);background:rgba(0,201,122,.04);}
-  /* ---- PLATFORM PLAYBOOK ---- */
-  .platform-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:14px;overflow:hidden;}
-  .platform-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
-  .platform-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-  .platform-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);}
-  .platform-verdict{font-size:12px;color:var(--text-muted);}
-  .platform-body{padding:18px 20px;}
-  .platform-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-  .p-col-title{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;}
-  .p-col ul{list-style:none;padding:0;}
-  .p-col ul li{font-size:12px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5;}
-  .p-col ul li:last-child{border-bottom:none;}
-  /* ---- HOOK FORMULA ---- */
-  .hook-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-  .hook-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
-  .hook-type{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
-  .hook-formula{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.4;}
-  .hook-example{font-size:12px;color:var(--green);background:var(--green-dim);border-radius:5px;padding:8px 10px;line-height:1.5;font-style:italic;}
-  /* ---- PILLAR GRID ---- */
-  .pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-  .pillar-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
-  .pillar-label{font-size:11px;font-weight:600;font-family:'Space Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
-  .pillar-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
-  .pillar-desc{font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:10px;}
-  .pillar-examples{font-size:11px;color:var(--text-muted);font-style:italic;}
-  /* ---- EFFORT LOG ---- */
-  .effort-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
-  .effort-card{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:13px 15px;display:flex;align-items:flex-start;gap:10px;}
-  .effort-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
-  .effort-label{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;}
-  .effort-note{font-size:11px;color:var(--text-muted);}
-  /* ---- AMPLIFICATION ---- */
-  .amp-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
-  .amp-row:last-child{border-bottom:none;}
-  .amp-bar-wrap{flex:1;}
-  .amp-name{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--text);width:160px;flex-shrink:0;}
-  .amp-sub{font-size:11px;color:var(--text-muted);}
-  .amp-num{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);width:70px;text-align:right;flex-shrink:0;}
-  .amp-bar{height:6px;background:var(--surface-2);border-radius:4px;margin-top:6px;overflow:hidden;}
-  .amp-fill{height:100%;border-radius:4px;background:var(--green);}
-  .inline-note{font-size:12px;color:var(--text-muted);margin-top:8px;font-style:italic;}
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--text-secondary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* ---- SIDEBAR NAVIGATION ---- */
+  .sidebar {
+    width: 280px;
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 32px 24px;
+    transition: var(--transition);
+  }
+  
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--blue) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--bg);
+    font-weight: 700;
+  }
+  
+  .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  
+  .logo-text span {
+    color: var(--brand);
+  }
+  
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    flex: 1;
+  }
+  
+  .nav-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: var(--text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+  }
+  
+  .nav-btn:hover {
+    background-color: var(--surface-hover);
+    color: var(--text);
+    border-color: var(--border);
+  }
+  
+  .nav-btn.active {
+    background-color: var(--brand-glow);
+    color: var(--brand);
+    border-color: rgba(0, 230, 118, 0.3);
+  }
+  
+  .sidebar-footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  
+  /* ---- MAIN CONTENT WRAPPER ---- */
+  .main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 48px 40px;
+    max-width: 1300px;
+    transition: var(--transition);
+  }
+  
+  /* ---- MOBILE HEADER ---- */
+  .mobile-header {
+    display: none;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .menu-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* ---- PAGE HEADER ---- */
+  .page-header {
+    margin-bottom: 40px;
+  }
+  
+  .doc-meta {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 8px;
+  }
+  
+  .page-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  
+  .page-subtitle {
+    color: var(--text-muted);
+    font-size: 16px;
+    max-width: 780px;
+  }
+  
+  /* ---- TAB CONTENT SPA ---- */
+  .tab-content {
+    display: none;
+    animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* ---- CARDS & GRIDS ---- */
+  .card-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .card-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .dashboard-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: var(--transition);
+  }
+  
+  .dashboard-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+  
+  .dashboard-card.featured {
+    border-color: rgba(0, 230, 118, 0.25);
+    background: linear-gradient(180deg, var(--surface-card) 0%, rgba(0, 230, 118, 0.02) 100%);
+  }
+  
+  .card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  
+  .card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .card-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  
+  /* ---- KEY FINDING HERO CALLOUT ---- */
+  .hero-finding {
+    background: linear-gradient(135deg, rgba(0, 230, 118, 0.12) 0%, rgba(96, 165, 250, 0.08) 100%);
+    border: 1.5px solid rgba(0, 230, 118, 0.25);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero-finding-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 12px;
+  }
+  
+  .hero-finding-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 900px;
+  }
+  
+  /* ---- KPI METRICS GRID ---- */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .kpi-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: var(--transition);
+  }
+  
+  .kpi-card:hover {
+    border-color: var(--blue);
+  }
+  
+  .kpi-platform {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  
+  .kpi-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  
+  .kpi-val.good { color: var(--brand); }
+  .kpi-val.warn { color: var(--amber); }
+  .kpi-val.bad { color: var(--red); }
+  
+  .kpi-note {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  
+  /* ---- DETAILED LISTS ---- */
+  .bullet-list {
+    list-style: none;
+  }
+  
+  .bullet-list li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .bullet-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .bullet-list li::before {
+    content: "→";
+    color: var(--brand);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  
+  .bullet-list.red li::before {
+    content: "×";
+    color: var(--red);
+    font-size: 18px;
+    line-height: 0.8;
+  }
+  
+  /* ---- BADGES & TAGS ---- */
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.02em;
+  }
+  
+  .badge-brand { background: var(--brand-glow); color: var(--brand); border: 1px solid rgba(0, 230, 118, 0.2); }
+  .badge-blue { background: var(--blue-glow); color: var(--blue); border: 1px solid rgba(96, 165, 250, 0.2); }
+  .badge-purple { background: var(--purple-glow); color: var(--purple); border: 1px solid rgba(167, 139, 250, 0.2); }
+  .badge-amber { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.2); }
+  .badge-red { background: var(--red-glow); color: var(--red); border: 1px solid rgba(255, 77, 106, 0.2); }
+  
+  /* ---- INTERACTIVE MATRIX & TABLE ---- */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .filter-btn {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .filter-btn:hover {
+    background-color: var(--surface-hover);
+    border-color: var(--border-hover);
+  }
+  
+  .filter-btn.active {
+    background-color: var(--blue);
+    color: var(--bg);
+    border-color: var(--blue);
+  }
+  
+  .matrix-wrapper {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-bottom: 32px;
+  }
+  
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    text-align: left;
+  }
+  
+  .matrix-table th {
+    background-color: var(--surface);
+    padding: 16px 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .matrix-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-secondary);
+  }
+  
+  .matrix-table tbody tr {
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .matrix-table tbody tr:hover td {
+    background-color: var(--surface-hover);
+  }
+  
+  .matrix-table tr.highlighted td {
+    background-color: rgba(0, 230, 118, 0.03);
+  }
+  
+  .matrix-table tr.highlighted:hover td {
+    background-color: rgba(0, 230, 118, 0.06);
+  }
+  
+  .comp-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  
+  .comp-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  
+  /* ---- SLIDE-OVER DETAIL DRAWER ---- */
+  .drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(9, 11, 14, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+  }
+  
+  .drawer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 600px;
+    max-width: 90%;
+    background-color: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 210;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  .drawer.active {
+    transform: translateX(0);
+  }
+  
+  .drawer-header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .drawer-title-area h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  
+  .drawer-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .drawer-close:hover {
+    color: var(--text);
+  }
+  
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 40px;
+  }
+  
+  .drawer-section {
+    margin-bottom: 28px;
+  }
+  
+  .drawer-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--brand);
+    margin-bottom: 12px;
+  }
+  
+  .swatch-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  
+  .swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  /* ---- SWOT MATRIX DYNAMIC ---- */
+  .swot-board {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  
+  .swot-quadrant {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: var(--transition);
+  }
+  
+  .swot-quadrant.s { border-left: 4px solid var(--brand); }
+  .swot-quadrant.w { border-left: 4px solid var(--amber); }
+  .swot-quadrant.o { border-left: 4px solid var(--purple); }
+  .swot-quadrant.t { border-left: 4px solid var(--red); }
+  
+  .swot-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .swot-quadrant.s .swot-title { color: var(--brand); }
+  .swot-quadrant.w .swot-title { color: var(--amber); }
+  .swot-quadrant.o .swot-title { color: var(--purple); }
+  .swot-quadrant.t .swot-title { color: var(--red); }
+  
+  /* ---- PLAYBOOKS TAB SUB-NAVIGATION ---- */
+  .playbook-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .playbook-nav-btn {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+  }
+  
+  .playbook-nav-btn:hover {
+    color: var(--text);
+    border-color: var(--border-hover);
+  }
+  
+  .playbook-nav-btn.active {
+    background-color: var(--surface-hover);
+    color: var(--text);
+    border-color: var(--blue);
+  }
+  
+  .playbook-panel {
+    display: none;
+  }
+  
+  .playbook-panel.active {
+    display: block;
+  }
+  
+  /* Playbook Action Checklists */
+  .checklist-box {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  
+  .checklist-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+  
+  .check-item input[type="checkbox"] {
+    margin-top: 4px;
+    accent-color: var(--brand);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+  
+  .check-item.completed {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  
+  /* ---- CONTENT MIX SIMULATOR ---- */
+  .simulator-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1.8fr;
+    gap: 32px;
+  }
+  
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .slider-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  
+  .slider-input {
+    width: 100%;
+    height: 6px;
+    background-color: var(--border);
+    border-radius: 4px;
+    outline: none;
+    accent-color: var(--brand);
+    cursor: pointer;
+  }
+  
+  .slider-row:nth-child(2) .slider-input { accent-color: var(--blue); }
+  .slider-row:nth-child(3) .slider-input { accent-color: var(--purple); }
+  
+  .recommendation-bubble {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* ---- UPVOTABLE RECOMMENDATIONS ---- */
+  .rec-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .rec-item-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    transition: var(--transition);
+  }
+  
+  .rec-item-card:hover {
+    border-color: var(--border-hover);
+  }
+  
+  .rec-content {
+    flex: 1;
+  }
+  
+  .rec-card-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  
+  .rec-card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  
+  .rec-card-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  
+  .upvote-button {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 80px;
+    transition: var(--transition);
+  }
+  
+  .upvote-button:hover {
+    background-color: var(--surface-hover);
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  
+  .upvote-button.upvoted {
+    background-color: var(--brand-glow);
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  
+  /* ---- GRAPHIC ELEMENT RENDERERS ---- */
+  .svg-wrap {
+    width: 100%;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  
   /* ---- FOOTER ---- */
-  .doc-footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-muted);}
-  @media(max-width:640px){
-    .insight-row,.rec-grid,.competitor-cards,.platform-grid,.hook-grid,.pillar-grid{grid-template-columns:1fr;}
-    .competitor-table{font-size:12px;}
-    .cc-stat-row{flex-wrap:wrap;}
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  
+  /* ---- RESPONSIVE RULES ---- */
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    
+    .main-content {
+      margin-left: 0;
+      padding: 100px 20px 40px;
+    }
+    
+    .mobile-header {
+      display: flex;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .card-grid-2, .card-grid-3, .swot-board, .simulator-container {
+      grid-template-columns: 1fr;
+    }
+    .rec-item-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .upvote-button {
+      flex-direction: row;
+      width: 100%;
+      justify-content: center;
+      gap: 8px;
+    }
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="doc-header">
-  <div class="doc-meta">SecureMojo <span>·</span> Founder's Office <span>·</span> Day 5 Deliverable <span>·</span> June 2026</div>
-  <h1 class="doc-title">Digital Presence &amp; Competitor Analysis</h1>
-  <p class="doc-subtitle">Where SecureMojo stands today, how we compare to the market, and what to do next — platform by platform.</p>
-  <div class="research-badge">
-    📋 <strong>Research scope:</strong> 7 competitors manually audited across Instagram, LinkedIn, X, YouTube, Facebook, Threads &amp; websites — Aura, Mitigata, NordVPN, ProtonVPN, Norton LifeLock, Incogni + SecureMojo full audit including Ben's personal brand &amp; CyberPulse community
-  </div>
-</div>
-
-<!-- KEY FINDING -->
-<div class="key-finding">
-  <div class="key-finding-label">Core Finding</div>
-  <div class="key-finding-text">SecureMojo has a solid brand identity and consistent educational content — but 80% of what we publish teaches and only 5% connects emotionally. The fastest-growing players in this space (Aura, Mitigata, Incogni) all do one thing differently: they make audiences feel something first, then learn. That shift is the single most important thing to fix.</div>
-</div>
-
-<!-- ============ SECTION 1 ============ -->
-<div class="section">
-  <div class="section-label">Section 01 — SecureMojo — Current Digital Presence</div>
-
-  <div class="stat-grid">
-    <div class="stat-card">
-      <div class="stat-platform">Instagram</div>
-      <div class="stat-number warn">84 posts</div>
-      <div class="stat-note">94 followers · ~6 avg likes</div>
+  <!-- MOBILE HEADER -->
+  <div class="mobile-header">
+    <div class="logo-area" style="margin-bottom: 0;">
+      <div class="logo-icon">M</div>
+      <div class="logo-text">Secure<span>Mojo</span></div>
     </div>
-    <div class="stat-card">
-      <div class="stat-platform">LinkedIn (Company)</div>
-      <div class="stat-number warn">246</div>
-      <div class="stat-note">followers · ~7 avg likes/post</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-platform">X / Twitter</div>
-      <div class="stat-number bad">9</div>
-      <div class="stat-note">91 posts · near-zero engagement</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-platform">Facebook</div>
-      <div class="stat-number bad">19</div>
-      <div class="stat-note">Auto-mirrored IG posts · minimal reach</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-platform">Threads</div>
-      <div class="stat-number bad">1</div>
-      <div class="stat-note">follower · no posts / activity</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-platform">YouTube</div>
-      <div class="stat-number bad">—</div>
-      <div class="stat-note">No channel exists yet</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-platform">Ben (LinkedIn)</div>
-      <div class="stat-number good">17K</div>
-      <div class="stat-note">Primary real growth channel today</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-platform">CyberPulse Group</div>
-      <div class="stat-number warn">29</div>
-      <div class="stat-note">LinkedIn group · real incident content</div>
-    </div>
+    <button class="menu-toggle" id="menuToggle">☰</button>
   </div>
 
-  <div class="insight-row">
-    <div class="insight-block good-block">
-      <div class="insight-block-title"><span class="tag tag-green">What's Working</span></div>
-      <ul>
-        <li>Consistent brand system — green, black, purple — instantly recognisable, rare for a startup this early</li>
-        <li>Clear content pillars: Hacker POV, Mojo Bytes, Did You Know — solid foundation</li>
-        <li>84 posts for a company founded in 2025 shows real discipline in showing up daily</li>
-        <li>Ben's personal brand (17K LinkedIn) is the primary growth driver — TEDx speaker, IIM grad, hacker-to-founder narrative is compelling</li>
-        <li>Mojo Bulletin newsletter — 15 editions published, getting 6–15 likes consistently per edition on LinkedIn</li>
-        <li>CyberPulse LinkedIn group — real incidents, real lessons, admin-led. Small but focused community.</li>
-        <li>Employee posts (Revathi welcome post ~10 likes, Alina's CyberPulse updates) are already extending reach beyond the company page</li>
-      </ul>
+  <!-- SIDEBAR NAVIGATION -->
+  <div class="sidebar" id="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon">M</div>
+      <div class="logo-text">Secure<span>Mojo</span></div>
     </div>
-    <div class="insight-block bad-block">
-      <div class="insight-block-title"><span class="tag tag-red">What Needs Fixing</span></div>
-      <ul>
-        <li>Content ratio is wrong: ~80% education, ~15% product, ~5% human story</li>
-        <li>X is dead — 91 posts, 9 followers. Wrong content format for X's algorithm.</li>
-        <li>No YouTube channel. Every single competitor in this space has one.</li>
-        <li>Product is invisible — viewers understand the threat, not what SecureMojo does about it</li>
-        <li>Facebook and Threads are just mirrored noise — no native engagement strategy</li>
-        <li>No shareable content yet — "Did You Know HTTPS exists" doesn't get forwarded on WhatsApp</li>
-        <li>Employee network not systematically activated — amplification is informal, not strategic</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- CONTENT MIX CHART -->
-  <div class="chart-wrap" style="margin-top:12px;">
-    <div class="chart-title">SecureMojo Content Mix vs Market Leaders</div>
-    <div class="chart-sub">Where the content effort currently goes vs what performers actually publish</div>
-
-    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:860px;">
-      <!-- Grid lines -->
-      <line x1="160" y1="20" x2="840" y2="20" stroke="#252a38" stroke-width="1"/>
-      <line x1="160" y1="60" x2="840" y2="60" stroke="#252a38" stroke-width="1"/>
-      <line x1="160" y1="100" x2="840" y2="100" stroke="#252a38" stroke-width="1"/>
-      <line x1="160" y1="140" x2="840" y2="140" stroke="#252a38" stroke-width="1"/>
-      <line x1="160" y1="180" x2="840" y2="180" stroke="#252a38" stroke-width="1"/>
-      <!-- Y axis labels -->
-      <text x="152" y="24" text-anchor="end" fill="#6b7280" font-size="10">100%</text>
-      <text x="152" y="64" text-anchor="end" fill="#6b7280" font-size="10">75%</text>
-      <text x="152" y="104" text-anchor="end" fill="#6b7280" font-size="10">50%</text>
-      <text x="152" y="144" text-anchor="end" fill="#6b7280" font-size="10">25%</text>
-      <text x="152" y="184" text-anchor="end" fill="#6b7280" font-size="10">0%</text>
-
-      <!-- SecureMojo bars -->
-      <text x="230" y="196" text-anchor="middle" fill="#9ca3af" font-size="10">SecureMojo</text>
-      <rect x="188" y="20" width="28" height="160" rx="3" fill="#60a5fa" opacity=".8"/><!-- Education 80% = 160px -->
-      <rect x="220" y="156" width="28" height="24" rx="3" fill="#a78bfa" opacity=".8"/><!-- Product 15% = 24px -->
-      <rect x="252" y="172" width="28" height="8" rx="3" fill="#00c97a" opacity=".8"/><!-- Human 5% = 8px -->
-
-      <!-- Aura bars -->
-      <text x="390" y="196" text-anchor="middle" fill="#9ca3af" font-size="10">Aura</text>
-      <rect x="348" y="60" width="28" height="120" rx="3" fill="#60a5fa" opacity=".8"/><!-- 60% -->
-      <rect x="380" y="100" width="28" height="80" rx="3" fill="#a78bfa" opacity=".8"/><!-- 40% wait, use 20% product-->
-      <rect x="348" y="60" width="28" height="60" rx="3" fill="#60a5fa" opacity=".8"/>
-      <rect x="380" y="116" width="28" height="64" rx="3" fill="#a78bfa" opacity=".8"/>
-      <rect x="412" y="100" width="28" height="80" rx="3" fill="#00c97a" opacity=".8"/>
-
-      <!-- Mitigata bars -->
-      <text x="550" y="196" text-anchor="middle" fill="#9ca3af" font-size="10">Mitigata</text>
-      <rect x="508" y="80" width="28" height="100" rx="3" fill="#60a5fa" opacity=".8"/>
-      <rect x="540" y="120" width="28" height="60" rx="3" fill="#a78bfa" opacity=".8"/>
-      <rect x="572" y="80" width="28" height="100" rx="3" fill="#00c97a" opacity=".8"/>
-
-      <!-- NordVPN bars -->
-      <text x="710" y="196" text-anchor="middle" fill="#9ca3af" font-size="10">NordVPN</text>
-      <rect x="668" y="100" width="28" height="80" rx="3" fill="#60a5fa" opacity=".8"/>
-      <rect x="700" y="60" width="28" height="120" rx="3" fill="#a78bfa" opacity=".8"/>
-      <rect x="732" y="140" width="28" height="40" rx="3" fill="#00c97a" opacity=".8"/>
-
-      <!-- Legend -->
-      <rect x="160" y="8" width="10" height="10" rx="2" fill="#60a5fa"/>
-      <text x="175" y="17" fill="#9ca3af" font-size="10">Education / Awareness</text>
-      <rect x="300" y="8" width="10" height="10" rx="2" fill="#a78bfa"/>
-      <text x="315" y="17" fill="#9ca3af" font-size="10">Product / Solution</text>
-      <rect x="420" y="8" width="10" height="10" rx="2" fill="#00c97a"/>
-      <text x="435" y="17" fill="#9ca3af" font-size="10">Human / Story</text>
-    </svg>
-    <p class="inline-note">SecureMojo is almost entirely on education. Mitigata's best-performing posts (160+ likes) are human/culture content. NordVPN leads with product demos. Aura balances all three — and they're growing fastest.</p>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 2: AMPLIFICATION ============ -->
-<div class="section">
-  <div class="section-label">Section 02 — Network Amplification — Who's Carrying the Brand</div>
-  <p style="color:var(--text-dim);font-size:13px;margin-bottom:20px;">The company page has 246 followers. But the total combined reach of people posting about SecureMojo is significantly larger. This is an underutilised asset.</p>
-
-  <div class="chart-wrap">
-    <div class="chart-title">Combined Network Reach — SecureMojo Ecosystem</div>
-    <div class="chart-sub">Every person who posts about SecureMojo extends the brand's effective reach</div>
-    <div style="padding:8px 0;">
-      <div class="amp-row">
-        <div class="amp-name">Ben (Founder)<div class="amp-sub">LinkedIn · primary brand builder</div></div>
-        <div class="amp-bar-wrap">
-          <div class="amp-bar"><div class="amp-fill" style="width:100%;background:var(--green);"></div></div>
-        </div>
-        <div class="amp-num">17,000</div>
-      </div>
-      <div class="amp-row">
-        <div class="amp-name">SecureMojo Page<div class="amp-sub">LinkedIn · company presence</div></div>
-        <div class="amp-bar-wrap">
-          <div class="amp-bar"><div class="amp-fill" style="width:1.4%;background:var(--blue);"></div></div>
-        </div>
-        <div class="amp-num">246</div>
-      </div>
-      <div class="amp-row">
-        <div class="amp-name">Alina Joe Mevada<div class="amp-sub">Finance & Ops · CyberPulse admin</div></div>
-        <div class="amp-bar-wrap">
-          <div class="amp-bar"><div class="amp-fill" style="width:3%;background:var(--amber);"></div></div>
-        </div>
-        <div class="amp-num">~500+</div>
-      </div>
-      <div class="amp-row">
-        <div class="amp-name">Other 13 Team Members<div class="amp-sub">LinkedIn — combined estimated reach</div></div>
-        <div class="amp-bar-wrap">
-          <div class="amp-bar"><div class="amp-fill" style="width:5%;background:var(--purple);"></div></div>
-        </div>
-        <div class="amp-num">~3–5K est.</div>
-      </div>
-      <div class="amp-row">
-        <div class="amp-name">@benildjoseph (Instagram)<div class="amp-sub">Personal brand · 2,989 followers</div></div>
-        <div class="amp-bar-wrap">
-          <div class="amp-bar"><div class="amp-fill" style="width:17.6%;background:var(--green);opacity:.6;"></div></div>
-        </div>
-        <div class="amp-num">2,989</div>
-      </div>
-    </div>
-    <p class="inline-note">If every team member posts or reposts one SecureMojo piece per week, the effective combined reach is 4–6x the company page alone. This is free distribution that isn't being used systematically.</p>
-  </div>
-
-  <div class="insight-block amber-block">
-    <div class="insight-block-title">📌 What Should Change — Employee Amplification</div>
-    <ul>
-      <li>Every new team hire / welcome post should go on company page AND be reposted by minimum 3 employees — welcome posts are consistently top performers (Mitigata: 246 likes on a welcome post)</li>
-      <li>Ben should cross-post his strongest insights from personal LinkedIn to company page consistently — right now it feels disconnected</li>
-      <li>Team members sharing their own "Day at SecureMojo" or "Why I joined" moment creates authentic reach that no paid promotion matches</li>
-      <li>Alina's CyberPulse posts are doing the right thing — this should be formalised as a weekly content responsibility, not informal</li>
+    
+    <ul class="nav-menu">
+      <li>
+        <button class="nav-btn active" onclick="switchTab('overview')">
+          <span>📊</span> Overview &amp; Footprint
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchTab('competitors')">
+          <span>⚔️</span> Competitor Matrix
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchTab('playbooks')">
+          <span>📖</span> Platform Playbooks
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchTab('content-strategy')">
+          <span>⚡</span> Content Strategy
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="switchTab('recommendations')">
+          <span>🎯</span> Priority Actions
+        </button>
+      </li>
     </ul>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 3: MARKET MAP ============ -->
-<div class="section">
-  <div class="section-label">Section 03 — Market Landscape — Where SecureMojo Actually Sits</div>
-  <p style="color:var(--text-dim);font-size:13px;margin-bottom:20px;">The task covered four spaces. Not all of them are direct competition. Understanding which is which changes how we learn from each.</p>
-
-  <!-- Quadrant SVG -->
-  <div class="chart-wrap">
-    <div class="chart-title">Market Positioning Map</div>
-    <div class="chart-sub">Consumer focus (individual vs enterprise) vs protection scope (device vs person)</div>
-    <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;">
-      <!-- axes -->
-      <line x1="350" y1="20" x2="350" y2="360" stroke="#252a38" stroke-width="1.5" stroke-dasharray="4,4"/>
-      <line x1="30" y1="190" x2="670" y2="190" stroke="#252a38" stroke-width="1.5" stroke-dasharray="4,4"/>
-      <!-- axis labels -->
-      <text x="350" y="14" text-anchor="middle" fill="#6b7280" font-size="10">ENTERPRISE FOCUS</text>
-      <text x="350" y="374" text-anchor="middle" fill="#6b7280" font-size="10">CONSUMER / PERSONAL FOCUS</text>
-      <text x="25" y="192" text-anchor="middle" fill="#6b7280" font-size="10" transform="rotate(-90,25,192)">DEVICE</text>
-      <text x="675" y="192" text-anchor="middle" fill="#6b7280" font-size="10" transform="rotate(-90,675,192)">PERSON</text>
-
-      <!-- Quadrant labels -->
-      <text x="185" y="50" text-anchor="middle" fill="#252a38" font-size="11" font-weight="700">ENTERPRISE</text>
-      <text x="185" y="65" text-anchor="middle" fill="#252a38" font-size="11" font-weight="700">SECURITY</text>
-      <text x="510" y="50" text-anchor="middle" fill="#252a38" font-size="11" font-weight="700">ENTERPRISE</text>
-      <text x="510" y="65" text-anchor="middle" fill="#252a38" font-size="11" font-weight="700">PROTECTION</text>
-      <text x="185" y="340" text-anchor="middle" fill="#2a3040" font-size="11" font-weight="700">CONSUMER</text>
-      <text x="185" y="355" text-anchor="middle" fill="#2a3040" font-size="11" font-weight="700">CYBER TOOLS</text>
-      <text x="510" y="340" text-anchor="middle" fill="#2a3040" font-size="11" font-weight="700">PERSONAL</text>
-      <text x="510" y="355" text-anchor="middle" fill="#2a3040" font-size="11" font-weight="700">PROTECTION</text>
-
-      <!-- Company dots -->
-      <!-- Norton - enterprise leaning, device -->
-      <circle cx="300" cy="110" r="22" fill="rgba(245,158,11,.15)" stroke="#f59e0b" stroke-width="1.5"/>
-      <text x="300" y="107" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="700">Norton</text>
-      <text x="300" y="119" text-anchor="middle" fill="#f59e0b" font-size="9">LifeLock</text>
-
-      <!-- McAfee -->
-      <circle cx="260" cy="145" r="18" fill="rgba(245,158,11,.1)" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>
-      <text x="260" y="148" text-anchor="middle" fill="#6b7280" font-size="9">McAfee</text>
-
-      <!-- NordVPN -->
-      <circle cx="155" cy="255" r="20" fill="rgba(96,165,250,.15)" stroke="#60a5fa" stroke-width="1.5"/>
-      <text x="155" y="252" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="700">Nord</text>
-      <text x="155" y="264" text-anchor="middle" fill="#60a5fa" font-size="9">VPN</text>
-
-      <!-- ProtonVPN -->
-      <circle cx="210" cy="290" r="18" fill="rgba(96,165,250,.1)" stroke="#60a5fa" stroke-width="1" stroke-dasharray="3,2"/>
-      <text x="210" y="293" text-anchor="middle" fill="#60a5fa" font-size="9">Proton</text>
-
-      <!-- Incogni -->
-      <circle cx="460" cy="260" r="18" fill="rgba(167,139,250,.15)" stroke="#a78bfa" stroke-width="1.5"/>
-      <text x="460" y="263" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="700">Incogni</text>
-
-      <!-- Aura -->
-      <circle cx="555" cy="290" r="24" fill="rgba(0,201,122,.15)" stroke="#00c97a" stroke-width="1.5"/>
-      <text x="555" y="287" text-anchor="middle" fill="#00c97a" font-size="10" font-weight="700">Aura</text>
-      <text x="555" y="299" text-anchor="middle" fill="#00c97a" font-size="9">US · Global</text>
-
-      <!-- Mitigata -->
-      <circle cx="510" cy="240" r="22" fill="rgba(0,201,122,.1)" stroke="#00c97a" stroke-width="1.5" stroke-dasharray="4,2"/>
-      <text x="510" y="237" text-anchor="middle" fill="#00c97a" font-size="10" font-weight="700">Mitigata</text>
-      <text x="510" y="249" text-anchor="middle" fill="#00c97a" font-size="9">India</text>
-
-      <!-- SecureMojo - highlighted -->
-      <circle cx="590" cy="320" r="28" fill="rgba(96,165,250,.2)" stroke="#60a5fa" stroke-width="2.5"/>
-      <text x="590" y="316" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700">Secure</text>
-      <text x="590" y="329" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700">Mojo</text>
-
-      <!-- Arrow showing opportunity zone -->
-      <text x="590" y="345" text-anchor="middle" fill="#60a5fa" font-size="9" opacity=".6">India · Creators</text>
-    </svg>
-    <p class="inline-note">SecureMojo operates in the personal protection quadrant — same space as Aura (US) and Mitigata (India). VPN companies (NordVPN, Proton) are attention competitors, not direct competitors.</p>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 4: COMPETITOR DEEP DIVES ============ -->
-<div class="section">
-  <div class="section-label">Section 04 — Competitor Deep Dives — What Each Brand Is Actually Doing</div>
-
-  <!-- AURA -->
-  <div class="competitor-card" style="margin-bottom:14px;">
-    <div class="cc-header">
-      <div>
-        <div class="cc-name">Aura</div>
-        <div class="cc-tagline">AI-powered personal safety · Boston, US · Founded 2017 · Tier 1 Direct Competitor</div>
-      </div>
-      <span class="tag tag-green">Closest Global Benchmark</span>
+    
+    <div class="sidebar-footer">
+      <p>SecureMojo Intelligence</p>
+      <p style="font-size: 11px; margin-top: 4px;">Day 5 Analysis • Confidential</p>
     </div>
-    <div class="cc-body">
-      <div class="cc-stat-row">
-        <div class="cc-stat"><div class="cc-stat-n">29K</div><div class="cc-stat-l">LinkedIn</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">50K</div><div class="cc-stat-l">Instagram</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">3.9K</div><div class="cc-stat-l">X followers</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">7.6K</div><div class="cc-stat-l">YouTube subs</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">620</div><div class="cc-stat-l">YT videos</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">12K</div><div class="cc-stat-l">Facebook</div></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    
+    <!-- ============ TAB 1: EXECUTIVE OVERVIEW ============ -->
+    <div id="overview" class="tab-content active">
+      <div class="page-header">
+        <div class="doc-meta">SecureMojo • Founder's Office</div>
+        <h1 class="page-title">Executive Summary &amp; Digital Footprint</h1>
+        <p class="page-subtitle">A tactical audit of SecureMojo's digital channels, network reach, and current audience positioning.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
-        <div>
-          <div class="p-col-title">Brand Identity</div>
-          <div class="color-swatch-row">
-            <div class="color-swatch" style="background:#1a1f3a;"></div>
-            <div class="color-swatch" style="background:#4f6ef7;"></div>
-            <div class="color-swatch" style="background:#ffffff;"></div>
-            <span style="font-size:11px;color:var(--text-muted);">Deep navy · Blue · White</span>
+      
+      <!-- Core Finding Hero Callout -->
+      <div class="hero-finding">
+        <div class="hero-finding-label">Core Strategic Insight</div>
+        <div class="hero-finding-text">
+          SecureMojo has a disciplined brand design and consistent posting patterns — but **80% of what we publish teaches (awareness) and only 5% connects emotionally**. The fastest-growing competitors (Aura, Mitigata, Incogni) grow because they trigger emotion first, then deliver instruction. Shifting this content ratio is our highest leverage task.
+        </div>
+      </div>
+      
+      <!-- Metrics Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-platform">Instagram</div>
+          <div class="kpi-val warn">84 posts</div>
+          <div class="kpi-note">94 followers • ~6 likes avg</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-platform">LinkedIn (Company)</div>
+          <div class="kpi-val warn">246</div>
+          <div class="kpi-note">followers • ~7 likes avg</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-platform">X / Twitter</div>
+          <div class="kpi-val bad">9</div>
+          <div class="kpi-note">followers • 91 text posts</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-platform">Ben (LinkedIn)</div>
+          <div class="kpi-val good">17K</div>
+          <div class="kpi-note">Foundational growth driver</div>
+        </div>
+      </div>
+      
+      <div class="card-grid-2">
+        <!-- What's Working -->
+        <div class="dashboard-card">
+          <div class="card-title" style="color: var(--brand);"><span>✓</span> What's Working Well</div>
+          <p class="card-desc" style="margin-top: 12px; margin-bottom: 0;">
+            Our brand assets (green, black, purple) are consistently recognized. The Mojo Bulletin (15 editions) maintains high-quality subscriptions, and Ben's LinkedIn presence (TEDx speaker, hacker-to-founder) gives us a distinct trust builder. Alina's CyberPulse group (29 members) proves that real-incident briefings capture interest.
+          </p>
+        </div>
+        
+        <!-- What Needs Fixing -->
+        <div class="dashboard-card">
+          <div class="card-title" style="color: var(--red);"><span>×</span> Urgent Friction Areas</div>
+          <p class="card-desc" style="margin-top: 12px; margin-bottom: 0;">
+            The actual product remains largely invisible on our socials — users learn the threat but don't see what SecureMojo does about it. X and Facebook are just mirrored feeds showing flat links that fail algorithms, and we have zero YouTube search footprint.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Combined Reach Chart -->
+      <div class="svg-wrap">
+        <div class="card-title" style="margin-bottom: 6px;">Ecosystem Reach &amp; Amplification Assets</div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">The company page has 246 followers, but our people-driven assets have a far wider footprint. Activating them systematically is free leverage.</p>
+        
+        <svg viewBox="0 0 800 240" style="width:100%; height:auto;">
+          <!-- Ben -->
+          <rect x="180" y="20" width="480" height="24" rx="4" fill="var(--brand)" opacity="0.85" />
+          <text x="10" y="36" fill="var(--text)" font-family="Space Grotesk" font-size="14" font-weight="600">Ben (Founder)</text>
+          <text x="790" y="36" fill="var(--brand)" font-family="Space Grotesk" font-size="14" font-weight="700" text-anchor="end">17,000</text>
+          
+          <!-- IG Ben -->
+          <rect x="180" y="60" width="120" height="24" rx="4" fill="var(--brand)" opacity="0.5" />
+          <text x="10" y="76" fill="var(--text)" font-family="Space Grotesk" font-size="14" font-weight="600">Ben (Instagram)</text>
+          <text x="790" y="76" fill="var(--text)" font-family="Space Grotesk" font-size="14" text-anchor="end">2,989</text>
+          
+          <!-- Team combined -->
+          <rect x="180" y="100" width="150" height="24" rx="4" fill="var(--purple)" opacity="0.85" />
+          <text x="10" y="116" fill="var(--text)" font-family="Space Grotesk" font-size="14" font-weight="600">Team (13 members)</text>
+          <text x="790" y="116" fill="var(--purple)" font-family="Space Grotesk" font-size="14" font-weight="700" text-anchor="end">~4,000</text>
+          
+          <!-- Company page -->
+          <rect x="180" y="140" width="15" height="24" rx="4" fill="var(--blue)" opacity="0.85" />
+          <text x="10" y="156" fill="var(--text)" font-family="Space Grotesk" font-size="14" font-weight="600">SecureMojo Page</text>
+          <text x="790" y="156" fill="var(--blue)" font-family="Space Grotesk" font-size="14" font-weight="700" text-anchor="end">246</text>
+          
+          <!-- CyberPulse group -->
+          <rect x="180" y="180" width="10" height="24" rx="4" fill="var(--amber)" opacity="0.85" />
+          <text x="10" y="196" fill="var(--text)" font-family="Space Grotesk" font-size="14" font-weight="600">CyberPulse Group</text>
+          <text x="790" y="196" fill="var(--amber)" font-family="Space Grotesk" font-size="14" font-weight="700" text-anchor="end">29</text>
+        </svg>
+      </div>
+
+      <!-- Interactive SWOT Quadrant -->
+      <div class="swot-board">
+        <div class="swot-quadrant s">
+          <div class="swot-title">Strengths <span>⚡</span></div>
+          <ul class="bullet-list">
+            <li>Human-in-the-loop: WhatsApp access creates unique, scaling trust.</li>
+            <li>Zero-friction UX: Audits run without installing clunky local apps.</li>
+            <li>Niche Positioning: motivated high-risk buyer profile ( VIP creators/founders).</li>
+          </ul>
+        </div>
+        <div class="swot-quadrant w">
+          <div class="swot-title">Weaknesses <span>⚠️</span></div>
+          <ul class="bullet-list">
+            <li>Scale logistics: WhatsApp response speeds rely on expert staff.</li>
+            <li>Sticker Shock: ₹6,000/year upfront price lacks a lower trial tier.</li>
+            <li>Zero virality: Content explains tech definitions instead of sharing stories.</li>
+          </ul>
+        </div>
+        <div class="swot-quadrant o">
+          <div class="swot-title">Opportunities <span>💡</span></div>
+          <ul class="bullet-list">
+            <li>B2B2C Channels: Pitch bulk licenses directly to VC portfolios and talent managers.</li>
+            <li>AI Triage Layer: Auto-respond basic links via WhatsApp, route exploits to experts.</li>
+            <li>Freemium Check: Let users run a quick dark web scan on lander to hook emails.</li>
+          </ul>
+        </div>
+        <div class="swot-quadrant t">
+          <div class="swot-title">Threats <span>🔥</span></div>
+          <ul class="bullet-list">
+            <li>Feature catching: Antivirus giants adding human advisors to standard subscriptions.</li>
+            <li>Privacy trust: Deeper OSINT checks require impeccable security reputation.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ============ TAB 2: COMPETITOR MATRIX ============ -->
+    <div id="competitors" class="tab-content">
+      <div class="page-header">
+        <div class="doc-meta">Market Landscape</div>
+        <h1 class="page-title">Interactive Competitor Matrix</h1>
+        <p class="page-subtitle">A strategic breakdown of direct and indirect competitors. Click any row to view full analysis details.</p>
+      </div>
+      
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterCompetitors('all')">All AUDITS (7)</button>
+        <button class="filter-btn" onclick="filterCompetitors('direct')">DIRECT COMPETE (2)</button>
+        <button class="filter-btn" onclick="filterCompetitors('privacy-vpn')">VPN &amp; PRIVACY (3)</button>
+        <button class="filter-btn" onclick="filterCompetitors('legacy')">LEGACY SECURITY (1)</button>
+      </div>
+      
+      <div class="matrix-wrapper">
+        <table class="matrix-table" id="competitorTable">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Category</th>
+              <th>Audience Focus</th>
+              <th>Content Focus</th>
+              <th>Follower Scale</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- SecureMojo -->
+            <tr class="highlighted" onclick="openDrawer('SecureMojo')">
+              <td>
+                <div class="comp-title">SecureMojo</div>
+                <div class="comp-subtitle">Founded 2025 • Bangalore</div>
+              </td>
+              <td><span class="badge badge-brand">Personal Resilience</span></td>
+              <td>VIPs, Creators, Founders</td>
+              <td>80% Educational, 15% Product, 5% Human</td>
+              <td class="num" style="font-weight:700; color:var(--brand);">246 (LI)</td>
+            </tr>
+            <!-- Aura -->
+            <tr data-cat="direct" onclick="openDrawer('Aura')">
+              <td>
+                <div class="comp-title">Aura</div>
+                <div class="comp-subtitle">Founded 2017 • Boston</div>
+              </td>
+              <td><span class="badge badge-brand">AI Personal Safety</span></td>
+              <td>Families, Consumers, BYOD</td>
+              <td>Balanced (Awareness, Ads, Memes, Work)</td>
+              <td class="num">29K (LI) • 50K (IG)</td>
+            </tr>
+            <!-- Mitigata -->
+            <tr data-cat="direct" onclick="openDrawer('Mitigata')">
+              <td>
+                <div class="comp-title">Mitigata</div>
+                <div class="comp-subtitle">Founded 2021 • Bangalore</div>
+              </td>
+              <td><span class="badge badge-brand">Resilience + Insurance</span></td>
+              <td>Businesses, Professionals, VIPs</td>
+              <td>Culture, Team Milestones, Memes</td>
+              <td class="num">2.2K (LI) • 122 Employees</td>
+            </tr>
+            <!-- NordVPN -->
+            <tr data-cat="privacy-vpn" onclick="openDrawer('NordVPN')">
+              <td>
+                <div class="comp-title">NordVPN</div>
+                <div class="comp-subtitle">Founded 2012 • Lithuania</div>
+              </td>
+              <td><span class="badge badge-blue">VPN / Traffic Security</span></td>
+              <td>Privacy Consumers, Techies</td>
+              <td>Product Demos, Motion UI, X Engagement</td>
+              <td class="num">23K (LI) • 51K (IG)</td>
+            </tr>
+            <!-- ProtonVPN -->
+            <tr data-cat="privacy-vpn" onclick="openDrawer('ProtonVPN')">
+              <td>
+                <div class="comp-title">ProtonVPN</div>
+                <div class="comp-subtitle">Founded 2014 • Switzerland</div>
+              </td>
+              <td><span class="badge badge-blue">Privacy / Secure Mail</span></td>
+              <td>High-Privacy Advocates</td>
+              <td>Privacy Activism, Open-Source, Memes</td>
+              <td class="num">150K (LI) • 120K (IG)</td>
+            </tr>
+            <!-- Incogni -->
+            <tr data-cat="privacy-vpn" onclick="openDrawer('Incogni')">
+              <td>
+                <div class="comp-title">Incogni</div>
+                <div class="comp-subtitle">Product by Surfshark</div>
+              </td>
+              <td><span class="badge badge-blue">Data Privacy Removal</span></td>
+              <td>Privacy-conscious users</td>
+              <td>Viral X hooks, Data stats, Video hooks</td>
+              <td class="num">7K (X) • 1M+ views</td>
+            </tr>
+            <!-- Norton LifeLock -->
+            <tr data-cat="legacy" onclick="openDrawer('Norton')">
+              <td>
+                <div class="comp-title">Norton LifeLock</div>
+                <div class="comp-subtitle">NASDAQ: GEN • Global</div>
+              </td>
+              <td><span class="badge badge-amber">Legacy Consumer AV</span></td>
+              <td>Mass Market Consumers</td>
+              <td>Corporate Updates, Podcast Videos</td>
+              <td class="num">85K (LI) • 420K (FB)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Follower Bar Chart -->
+      <div class="svg-wrap">
+        <div class="card-title" style="margin-bottom: 6px;">LinkedIn Follower Scale Comparison</div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Traditional VPNs and legacy anti-viruses have scales we cannot chase immediately. The focus is engagement density, not raw count.</p>
+        
+        <svg viewBox="0 0 800 280" style="width:100%; height:auto;">
+          <!-- Proton -->
+          <rect x="180" y="20" width="500" height="20" rx="3" fill="var(--purple)" opacity="0.8" />
+          <text x="10" y="35" fill="var(--text)" font-family="Space Grotesk" font-size="13">ProtonVPN</text>
+          <text x="690" y="35" fill="var(--text)" font-family="Space Grotesk" font-size="13" font-weight="600">150,000</text>
+          
+          <!-- Norton -->
+          <rect x="180" y="60" width="350" height="20" rx="3" fill="var(--amber)" opacity="0.8" />
+          <text x="10" y="75" fill="var(--text)" font-family="Space Grotesk" font-size="13">Norton LifeLock</text>
+          <text x="540" y="75" fill="var(--text)" font-family="Space Grotesk" font-size="13" font-weight="600">85,000</text>
+          
+          <!-- Aura -->
+          <rect x="180" y="100" width="180" height="20" rx="3" fill="var(--brand)" opacity="0.85" />
+          <text x="10" y="115" fill="var(--text)" font-family="Space Grotesk" font-size="13">Aura (Direct Global)</text>
+          <text x="370" y="115" fill="var(--brand)" font-family="Space Grotesk" font-size="13" font-weight="600">29,000</text>
+          
+          <!-- NordVPN -->
+          <rect x="180" y="140" width="150" height="20" rx="3" fill="var(--blue)" opacity="0.8" />
+          <text x="10" y="155" fill="var(--text)" font-family="Space Grotesk" font-size="13">NordVPN</text>
+          <text x="340" y="155" fill="var(--text)" font-family="Space Grotesk" font-size="13" font-weight="600">23,000</text>
+          
+          <!-- Mitigata -->
+          <rect x="180" y="180" width="40" height="20" rx="3" fill="var(--brand)" opacity="0.5" />
+          <text x="10" y="195" fill="var(--text)" font-family="Space Grotesk" font-size="13">Mitigata (Direct India)</text>
+          <text x="230" y="195" fill="var(--text)" font-family="Space Grotesk" font-size="13" font-weight="600">2,245</text>
+          
+          <!-- SecureMojo -->
+          <rect x="180" y="220" width="6" height="20" rx="2" fill="var(--brand)" />
+          <text x="10" y="235" fill="var(--brand)" font-family="Space Grotesk" font-size="13" font-weight="700">SecureMojo</text>
+          <text x="195" y="235" fill="var(--brand)" font-family="Space Grotesk" font-size="13" font-weight="700">246</text>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- ============ TAB 3: PLATFORM PLAYBOOKS ============ -->
+    <div id="playbooks" class="tab-content">
+      <div class="page-header">
+        <div class="doc-meta">Action Playbook</div>
+        <h1 class="page-title">Platform-by-Platform Playbooks</h1>
+        <p class="page-subtitle">Granular strategies to capture attention, reformat our content, and grow engagement locally.</p>
+      </div>
+      
+      <div class="playbook-nav">
+        <button class="playbook-nav-btn active" onclick="switchPlaybook('linkedin')">💼 LinkedIn</button>
+        <button class="playbook-nav-btn" onclick="switchPlaybook('instagram')">📸 Instagram</button>
+        <button class="playbook-nav-btn" onclick="switchPlaybook('x-twitter')">𝕏 X / Twitter</button>
+        <button class="playbook-nav-btn" onclick="switchPlaybook('youtube')">📺 YouTube</button>
+        <button class="playbook-nav-btn" onclick="switchPlaybook('facebook-threads')">👥 Facebook &amp; Threads</button>
+      </div>
+      
+      <!-- LINKEDIN PLAYBOOK -->
+      <div id="playbook-linkedin" class="playbook-panel active">
+        <div class="card-grid-3">
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--blue);">What Works</div>
+            <p class="card-desc">Mitigata VP welcome post got 246+ likes. Culture content and sports outings (160+ likes) outperform dry product explainers 5x. People engage with people.</p>
           </div>
-          <p style="font-size:12px;color:var(--text-dim);">Deliberately NOT "cybersecurity looking." Clean, modern, lifestyle-oriented. Feels like a healthcare or finance brand — approachable, not technical.</p>
-        </div>
-        <div>
-          <div class="p-col-title">Content That Works</div>
-          <ul style="list-style:none;padding:0;">
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">📹 Short reels — woman interviewing people on street about cyber habits. 66 likes on Instagram, 1K+ on YouTube for same reel</li>
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">😂 Memes — "me staring at login screen waiting for password to work." Low effort, high share rate.</li>
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;">🐾 Pet-friendly office posts, Life at Aura — culture content getting 200 likes on LinkedIn</li>
-          </ul>
-        </div>
-        <div>
-          <div class="p-col-title">Key Insight</div>
-          <p style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">Their RDJ campaign (June 2025) used AI to de-age/age him through life stages — "protect what matters at every stage of life." The insight: emotional storytelling sells protection better than features.</p>
-          <p style="font-size:12px;color:var(--text-dim);">Same content on Instagram gets ~13 likes. Same on YouTube gets 1K+. YouTube is their real growth engine.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MITIGATA -->
-  <div class="competitor-card" style="margin-bottom:14px;">
-    <div class="cc-header">
-      <div>
-        <div class="cc-name">Mitigata</div>
-        <div class="cc-tagline">Full-stack cyber resilience + insurance · Bengaluru · Founded 2021 · Tier 1 Direct Competitor</div>
-      </div>
-      <span class="tag tag-red">⚠️ Raised $5.9M · Aug 2025</span>
-    </div>
-    <div class="cc-body">
-      <div class="cc-stat-row">
-        <div class="cc-stat"><div class="cc-stat-n">2.2K</div><div class="cc-stat-l">LinkedIn</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">122</div><div class="cc-stat-l">LI members</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">51-200</div><div class="cc-stat-l">employees</div></div>
-        <div class="cc-stat"><div class="cc-stat-n">$5.9M</div><div class="cc-stat-l">Series A</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
-        <div>
-          <div class="p-col-title">Brand Identity</div>
-          <div class="color-swatch-row">
-            <div class="color-swatch" style="background:#00c264;"></div>
-            <div class="color-swatch" style="background:#000000;"></div>
-            <div class="color-swatch" style="background:#ffffff;"></div>
-            <span style="font-size:11px;color:var(--text-muted);">Green · Black · White</span>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--red);">Gaps to Fix</div>
+            <p class="card-desc">The company page is isolated from Ben's strong 17K network. We lack team highlights, employee milestones, and structured organic amplification.</p>
           </div>
-          <p style="font-size:12px;color:var(--text-dim);">Similar color system to SecureMojo. More enterprise-feeling in website design. Insurance-first positioning. Won Startup of the Year at India Insurance Summit 2024.</p>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--brand);">Strategy</div>
+            <p class="card-desc">Cross-post Benild's strong personal thought pieces to the company feed. Introduce office culture snapshots and team stories weekly.</p>
+          </div>
         </div>
-        <div>
-          <div class="p-col-title">What Gets Likes on LinkedIn</div>
-          <ul style="list-style:none;padding:0;">
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">🏏 Sports tournament post (cricket + badminton) → 160 likes</li>
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">👋 Welcome post (VP Engineering) → 246 likes</li>
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">🏆 Award announcement → 116 likes</li>
-            <li style="font-size:12px;color:var(--text-dim);padding:4px 0;">📢 Regular cyber content → 20–30 likes avg</li>
-          </ul>
+        
+        <div class="dashboard-card checklist-box">
+          <div class="checklist-title">💼 LinkedIn Execution Checklist</div>
+          <label class="check-item"><input type="checkbox" data-key="li-1"> Connect Ben's personal thought leadership to the company page via structural shares.</label>
+          <label class="check-item"><input type="checkbox" data-key="li-2"> Set up weekly "Culture / Team" posting formats (welcome notes, sprints, badminton matchups).</label>
+          <label class="check-item"><input type="checkbox" data-key="li-3"> Establish a formal internal loop: 13 team members comment &amp; share within 60 mins of publishing.</label>
         </div>
-        <div>
-          <div class="p-col-title">Key Insight</div>
-          <p style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">Mitigata proves human content outperforms product content 5–8x on LinkedIn even for a cyber company. Their Durandhar-themed meme post (positioning cyber stack using IPL cricket characters) got 100+ likes — cultural relevance + humour works.</p>
-          <p style="font-size:12px;color:var(--text-dim);">Now funded. Will scale marketing significantly. Most urgent direct competitor to watch.</p>
+      </div>
+      
+      <!-- INSTAGRAM PLAYBOOK -->
+      <div id="playbook-instagram" class="playbook-panel">
+        <div class="card-grid-3">
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--blue);">What Works</div>
+            <p class="card-desc">Aura's short reels (street-interviews asking public about cyber habits) gain viral loops. Relatable cyber memes establish regular profile shareability.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--red);">Gaps to Fix</div>
+            <p class="card-desc">Current posts are textbook explainers ("What is HTTPS"). High quality, but static and unshareable. No human faces or video formats.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--brand);">Strategy</div>
+            <p class="card-desc">Shift grid from strict lessons to relatable memes + street-interviews. Add human-centric video walkthroughs showing Mojo Advice triage.</p>
+          </div>
         </div>
+        
+        <div class="dashboard-card checklist-box">
+          <div class="checklist-title">📸 Instagram Execution Checklist</div>
+          <label class="check-item"><input type="checkbox" data-key="ig-1"> Introduce 2 weekly cybersecurity memes targeting creator/professional digital fears.</label>
+          <label class="check-item"><input type="checkbox" data-key="ig-2"> Launch a "concierge walkthrough" reel showing a mock WhatsApp triage for a scam link.</label>
+          <label class="check-item"><input type="checkbox" data-key="ig-3"> Test collaborative reels with Indian tech creators/influencers reviewing digital footprints.</label>
+        </div>
+      </div>
+      
+      <!-- X PLAYBOOK -->
+      <div id="playbook-x-twitter" class="playbook-panel">
+        <div class="card-grid-3">
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--blue);">What Works</div>
+            <p class="card-desc">Incogni's hook-first threads. Starting with shocking statistics or public hacks gets 100K+ impressions with a small following. Interactive polls work well.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--red);">Gaps to Fix</div>
+            <p class="card-desc">We publish flat link mirrors and stock cards. These receive zero algorithm boosts. We don't interact with tech journalists or security reporters in replies.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--brand);">Strategy</div>
+            <p class="card-desc">Repurpose Mojo Bulletin news into native text-only X threads with high-friction hook setups. Use polls to drive interaction loops.</p>
+          </div>
+        </div>
+        
+        <div class="dashboard-card checklist-box">
+          <div class="checklist-title">𝕏 X / Twitter Execution Checklist</div>
+          <label class="check-item"><input type="checkbox" data-key="x-1"> Convert weekly news digests into 5-post X threads starting with a high-friction visual setup.</label>
+          <label class="check-item"><input type="checkbox" data-key="x-2"> Implement a daily 15-minute playbook engaging in replies of tech figures (e.g. Nithin Kamath, Peak XV).</label>
+          <label class="check-item"><input type="checkbox" data-key="x-3"> Run a weekly security poll (e.g. "Do you reuse passwords across banking and email?").</label>
+        </div>
+      </div>
+      
+      <!-- YOUTUBE PLAYBOOK -->
+      <div id="playbook-youtube" class="playbook-panel">
+        <div class="card-grid-3">
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--blue);">What Works</div>
+            <p class="card-desc">Explainer guides answering search queries ("how to secure WhatsApp account"). High-contrast visual thumbnails featuring real people.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--red);">Gaps to Fix</div>
+            <p class="card-desc">Total absence of a channel. Missed opportunity for long-tail SEO on the second largest search engine. No product walk-through archives.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--brand);">Strategy</div>
+            <p class="card-desc">Launch channel focusing on short walkthroughs and security tutorials. Repurpose Benild's key thoughts as Shorts.</p>
+          </div>
+        </div>
+        
+        <div class="dashboard-card checklist-box">
+          <div class="checklist-title">📺 YouTube Execution Checklist</div>
+          <label class="check-item"><input type="checkbox" data-key="yt-1"> Set up SecureMojo official channel with structured branding banners.</label>
+          <label class="check-item"><input type="checkbox" data-key="yt-2"> Produce a 3-minute video showing "How WhatsApp Mojo Advice protects you in real-time."</label>
+          <label class="check-item"><input type="checkbox" data-key="yt-3"> Schedule 3 Shorts weekly from Benild's speaking sessions or podcast highlights.</label>
+        </div>
+      </div>
+      
+      <!-- FACEBOOK & THREADS PLAYBOOK -->
+      <div id="playbook-facebook-threads" class="playbook-panel">
+        <div class="card-grid-3">
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--blue);">What Works</div>
+            <p class="card-desc">Parent-focused security guidelines and family data safety posts. Casual, daily text journals on Threads.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--red);">Gaps to Fix</div>
+            <p class="card-desc">Automatic mirroring from IG to FB ruins formatting, link layouts, and hashtags. Zero posts or interactions on Threads.</p>
+          </div>
+          <div class="dashboard-card">
+            <div class="card-title" style="color: var(--brand);">Strategy</div>
+            <p class="card-desc">Maintain FB strictly as a basic business profile card. Experiment with Threads as a thought dump for quick cyber facts.</p>
+          </div>
+        </div>
+        
+        <div class="dashboard-card checklist-box">
+          <div class="checklist-title">👥 Facebook &amp; Threads Execution Checklist</div>
+          <label class="check-item"><input type="checkbox" data-key="fb-1"> Disable auto-mirroring from Instagram to avoid broken hashtags and captions on Facebook.</label>
+          <label class="check-item"><input type="checkbox" data-key="fb-2"> Write 3 Threads posts weekly mirroring Ben's casual reflections on digital surveillance.</label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ============ TAB 4: CONTENT STRATEGY ============ -->
+    <div id="content-strategy" class="tab-content">
+      <div class="page-header">
+        <div class="doc-meta">Content Strategy</div>
+        <h1 class="page-title">Content Pillars &amp; Hook Modeling</h1>
+        <p class="page-subtitle">A data-driven methodology to hook users immediately, structure our focus, and model the optimum mix.</p>
+      </div>
+      
+      <div class="card-grid-3">
+        <!-- Pillar 1 -->
+        <div class="dashboard-card">
+          <div class="badge badge-brand" style="margin-bottom: 12px;">Pillar 01</div>
+          <div class="card-title" style="margin-bottom: 8px;">The Hacker's Eye (POV)</div>
+          <p class="card-desc" style="font-size: 14.5px;">Vulnerability teardowns showing how easy it is to trace, track, or exploit open digital footprints.</p>
+          <p style="font-size: 13px; color: var(--text-muted); font-style: italic;">e.g., "A white-hat hacker scans your public hotel Wi-Fi footprint. Here is what I see..."</p>
+        </div>
+        
+        <!-- Pillar 2 -->
+        <div class="dashboard-card">
+          <div class="badge badge-blue" style="margin-bottom: 12px;">Pillar 02</div>
+          <div class="card-title" style="margin-bottom: 8px;">Survival Checklists</div>
+          <p class="card-desc" style="font-size: 14.5px;">Actionable step-by-step guides showing how to secure specific items immediately (e.g. WhatsApp verification).</p>
+          <p style="font-size: 13px; color: var(--text-muted); font-style: italic;">e.g., "Hacked? Here is the 10-minute emergency recovery playbook."</p>
+        </div>
+        
+        <!-- Pillar 3 -->
+        <div class="dashboard-card">
+          <div class="badge badge-purple" style="margin-bottom: 12px;">Pillar 03</div>
+          <div class="card-title" style="margin-bottom: 8px;">Scam Tragedies (Stories)</div>
+          <p class="card-desc" style="font-size: 14.5px;">Real-world incident breakdowns showing how smart individuals got scammed, emphasizing the psychology used.</p>
+          <p style="font-size: 13px; color: var(--text-muted); font-style: italic;">e.g., "How this CEO lost ₹12 Lakhs to a WhatsApp deepfake video call..."</p>
+        </div>
+      </div>
+      
+      <!-- Interactive Content Mix Simulator -->
+      <div class="dashboard-card featured" style="margin-bottom: 32px;">
+        <div class="card-title" style="margin-bottom: 8px;">Interactive Content Mix Simulator</div>
+        <p class="card-desc" style="max-width: 800px;">Adjust the sliders to allocate marketing effort and content focus. See how your mix impacts audience engagement density and recommended execution playbooks.</p>
+        
+        <div class="simulator-container" style="margin-top: 24px;">
+          <!-- Sliders -->
+          <div class="slider-group">
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>Educational / Threat Intel</span>
+                <span id="eduVal" style="color:var(--brand)">80%</span>
+              </div>
+              <input type="range" class="slider-input" id="eduSlider" min="0" max="100" value="80" oninput="simUpdate()">
+            </div>
+            
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>Product / Solutions Demo</span>
+                <span id="prodVal" style="color:var(--blue)">15%</span>
+              </div>
+              <input type="range" class="slider-input" id="prodSlider" min="0" max="100" value="15" oninput="simUpdate()">
+            </div>
+            
+            <div class="slider-row">
+              <div class="slider-label-row">
+                <span>Human Story / Culture / Memes</span>
+                <span id="humanVal" style="color:var(--purple)">5%</span>
+              </div>
+              <input type="range" class="slider-input" id="humanSlider" min="0" max="100" value="5" oninput="simUpdate()">
+            </div>
+            
+            <p id="totalAlert" style="font-size: 13px; color: var(--red); display:none;">⚠️ Ratios must sum up to 100%! Currently: <span id="totalVal">100%</span></p>
+          </div>
+          
+          <!-- Recommendations Bubble -->
+          <div class="recommendation-bubble">
+            <div>
+              <div class="card-title" style="font-size: 15px; margin-bottom: 12px; color: var(--text);">Simulated Strategic Impact</div>
+              <p id="simText" style="font-size:15px; color: var(--text-secondary);">Your current mix (80% Edu, 15% Prod, 5% Human) mirrors SecureMojo's baseline. Users learn security concepts, but organic sharing remains low (~6 likes average). Urgency is missing.</p>
+            </div>
+            
+            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <span class="badge" id="simBadge" style="background: var(--amber-glow); color: var(--amber);">Status: Baseline Focus</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Engagement Hook Formulas -->
+      <div class="dashboard-card">
+        <div class="card-title" style="margin-bottom: 16px;">Engagement Hook Formula Generator</div>
+        <p class="card-desc">Click a button to generate a structured hook formula and real-world example based on audited viral competitor templates.</p>
+        
+        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+          <button class="filter-btn active" id="btnHook1" onclick="generateHook(1)">Exposure Setup</button>
+          <button class="filter-btn" id="btnHook2" onclick="generateHook(2)">Scam Triage Hook</button>
+          <button class="filter-btn" id="btnHook3" onclick="generateHook(3)">Hacker POV Exploit</button>
+        </div>
+        
+        <div style="background-color: var(--surface); border:1px solid var(--border); padding:24px; border-radius:8px;">
+          <div class="rec-card-num" id="hookType">Exposure Setup</div>
+          <div class="rec-card-title" id="hookFormula" style="font-size: 20px; margin-bottom: 12px;">[VIP Figure Name] + [How they got hacked] + [1 actionable solution]</div>
+          <p id="hookExample" style="font-size:16px; font-style:italic; color:var(--brand);">"How a tech founder's public hotel Wi-Fi connection cost them ₹12 Lakhs in under 5 minutes..."</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ============ TAB 5: ACTION RECOMMENDATIONS ============ -->
+    <div id="recommendations" class="tab-content">
+      <div class="page-header">
+        <div class="doc-meta">Recommendations</div>
+        <h1 class="page-title">Actionable Gaps &amp; Roadmap</h1>
+        <p class="page-subtitle">Priority adjustments ranked by execution feasibility and overall strategic impact.</p>
+      </div>
+      
+      <div style="margin-bottom: 24px;">
+        <p style="color: var(--text-muted); font-size: 15px;">Click "Upvote" on any recommendation to adjust priorities dynamically. The board sorts itself based on team interest.</p>
+      </div>
+      
+      <div class="rec-list" id="recList">
+        <!-- Rec 1 -->
+        <div class="rec-item-card" data-votes="12" id="rec-1">
+          <div class="rec-content">
+            <div class="rec-card-num">Priority 01 • Dynamic Opportunity</div>
+            <div class="rec-card-title">Freemium Threat Scan Lander</div>
+            <p class="rec-card-desc">Build a simple exposure scanner landing page. Users input an email or handle, receive a quick scan report, and are upsold to the ₹6,000 core concierge tier. Resolves stickershock and builds emails.</p>
+          </div>
+          <button class="upvote-button" onclick="upvoteCard('rec-1')">
+            <span>▲</span>
+            <span class="vote-count">12</span>
+          </button>
+        </div>
+        
+        <!-- Rec 2 -->
+        <div class="rec-item-card" data-votes="8" id="rec-2">
+          <div class="rec-content">
+            <div class="rec-card-num">Priority 02 • Distribution Channel</div>
+            <div class="rec-card-title">VC and Creator Management Partnerships</div>
+            <p class="rec-card-desc">Pivot from high-CAC B2C ads to bulk partnerships. Pitch VC funds to bundle protection for their portfolio founders, and talent agencies to secure their creators' social channels to avoid channel recovery shutdowns.</p>
+          </div>
+          <button class="upvote-button" onclick="upvoteCard('rec-2')">
+            <span>▲</span>
+            <span class="vote-count">8</span>
+          </button>
+        </div>
+        
+        <!-- Rec 3 -->
+        <div class="rec-item-card" data-votes="5" id="rec-3">
+          <div class="rec-content">
+            <div class="rec-card-num">Priority 03 • Operational Scaling</div>
+            <div class="rec-card-title">WhatsApp AI Triage Concierge</div>
+            <p class="rec-card-desc">Integrate a custom LLM triage agent on our WhatsApp endpoint. It handles 80% of routine verification queries ("Is this coupon link a scam?") immediately, routing only complex threats to human engineers.</p>
+          </div>
+          <button class="upvote-button" onclick="upvoteCard('rec-3')">
+            <span>▲</span>
+            <span class="vote-count">5</span>
+          </button>
+        </div>
+        
+        <!-- Rec 4 -->
+        <div class="rec-item-card" data-votes="4" id="rec-4">
+          <div class="rec-content">
+            <div class="rec-card-num">Priority 04 • Content Expansion</div>
+            <div class="rec-card-title">YouTube Long-tail SEO Setup</div>
+            <p class="rec-card-desc">Launch YouTube channel. Target specific troubleshooting search queries (e.g. "Recover locked Instagram business account"). Add interactive Shorts from Benild's podcasts to build search footprint.</p>
+          </div>
+          <button class="upvote-button" onclick="upvoteCard('rec-4')">
+            <span>▲</span>
+            <span class="vote-count">4</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="footer">
+      <div>SecureMojo &copy; 2026 • Founder's Office</div>
+      <div>Confidential • Internal Business Strategy</div>
+    </div>
+  </div>
+
+  <!-- SLIDE-OVER DETAIL DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="detailDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title-area">
+        <h2 id="drawerTitle">Competitor Profile</h2>
+        <p id="drawerTagline" style="color: var(--text-muted); font-size: 14px; margin-top: 4px;"></p>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">×</button>
+    </div>
+    
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <div class="drawer-section-title">Audience &amp; Positioning</div>
+        <p id="drawerPositioning" style="font-size: 15px; color: var(--text-secondary);"></p>
+      </div>
+      
+      <div class="drawer-section">
+        <div class="drawer-section-title">Brand Aesthetics</div>
+        <div style="font-size:15px;" id="drawerPaletteText"></div>
+        <div class="swatch-group" id="drawerSwatches"></div>
+      </div>
+      
+      <div class="drawer-section">
+        <div class="drawer-section-title">Engagement Footprint</div>
+        <ul class="bullet-list" id="drawerFootprint"></ul>
+      </div>
+      
+      <div class="drawer-section">
+        <div class="drawer-section-title">What Works Well</div>
+        <ul class="bullet-list" id="drawerWorks"></ul>
+      </div>
+      
+      <div class="drawer-section" style="margin-bottom:0;">
+        <div class="drawer-section-title" style="color: var(--purple);">What SecureMojo Can Steal</div>
+        <ul class="bullet-list" id="drawerSteal" style="border-left: 2px solid var(--purple); padding-left: 14px;"></ul>
       </div>
     </div>
   </div>
 
-  <!-- NORDVPN + PROTON -->
-  <div class="competitor-cards">
-    <div class="competitor-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">NordVPN</div>
-          <div class="cc-tagline">VPN · Lithuania · Attention competitor</div>
-        </div>
-        <span class="tag tag-blue">Product Marketing Leader</span>
-      </div>
-      <div class="cc-body">
-        <div class="cc-stat-row">
-          <div class="cc-stat"><div class="cc-stat-n">23K</div><div class="cc-stat-l">LinkedIn</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">51K</div><div class="cc-stat-l">Instagram</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">155K</div><div class="cc-stat-l">X followers</div></div>
-        </div>
-        <div class="cc-row"><span class="cc-label">Brand colours</span><span class="cc-value">Deep blue · dark navy · white</span></div>
-        <div class="cc-row"><span class="cc-label">Best content</span><span class="cc-value">9-sec product UI motion videos (After Effects style). Polls on X getting 12K+ votes. 1.3M views on X text posts.</span></div>
-        <div class="cc-row"><span class="cc-label">Instagram perf</span><span class="cc-value">200–300 likes on regular posts. 21K on collab content.</span></div>
-        <div class="cc-row"><span class="cc-label">What SecureMojo can steal</span><span class="cc-value">Short product demo videos showing the product in 3–9 seconds. Polls on X as engagement tool.</span></div>
-      </div>
-    </div>
-    <div class="competitor-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">ProtonVPN</div>
-          <div class="cc-tagline">Privacy VPN · Switzerland · Community-builder</div>
-        </div>
-        <span class="tag tag-purple">Community Model</span>
-      </div>
-      <div class="cc-body">
-        <div class="cc-stat-row">
-          <div class="cc-stat"><div class="cc-stat-n">150K</div><div class="cc-stat-l">LinkedIn</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">120K</div><div class="cc-stat-l">Instagram</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">362K</div><div class="cc-stat-l">X followers</div></div>
-        </div>
-        <div class="cc-row"><span class="cc-label">Brand colours</span><span class="cc-value">Deep purple · dark backgrounds · white</span></div>
-        <div class="cc-row"><span class="cc-label">Best content</span><span class="cc-value">Privacy advocacy posts. Business insight memes. Open-source credibility content. YouTube near 1L subs.</span></div>
-        <div class="cc-row"><span class="cc-label">Platform presence</span><span class="cc-value">Present on Reddit, Discord, Telegram, TikTok, Threads — most complete platform coverage in space</span></div>
-        <div class="cc-row"><span class="cc-label">What SecureMojo can steal</span><span class="cc-value">Community-first strategy. Build believers, not just customers. CyberPulse could become this.</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- INCOGNI + NORTON -->
-  <div class="competitor-cards" style="margin-top:14px;">
-    <div class="competitor-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">Incogni</div>
-          <div class="cc-tagline">Data removal · Privacy focus · Tier 2</div>
-        </div>
-        <span class="tag tag-purple">X / Twitter Master</span>
-      </div>
-      <div class="cc-body">
-        <div class="cc-stat-row">
-          <div class="cc-stat"><div class="cc-stat-n">7K</div><div class="cc-stat-l">X followers</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">3K</div><div class="cc-stat-l">X posts</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">253</div><div class="cc-stat-l">YT videos</div></div>
-        </div>
-        <div class="cc-row"><span class="cc-label">Brand colours</span><span class="cc-value">White, black, blue illustrations — minimal, clean</span></div>
-        <div class="cc-row"><span class="cc-label">X performance</span><span class="cc-value">3.7K – 1,00,000 views per post with only 7K followers. Hook-first content. Shareable stats.</span></div>
-        <div class="cc-row"><span class="cc-label">YouTube style</span><span class="cc-value">Hook thumbnails — "Dark AI industry growing so fast you won't believe." People-facing thumbnails, not tech graphics.</span></div>
-        <div class="cc-row"><span class="cc-label">Key lesson</span><span class="cc-value">Reach has nothing to do with follower count. Shareable content gets 10x the reach of educational content.</span></div>
-      </div>
-    </div>
-    <div class="competitor-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">Norton LifeLock (Gen)</div>
-          <div class="cc-tagline">Consumer cybersecurity · Global brand · Tier 1</div>
-        </div>
-        <span class="tag tag-amber">Legacy Brand</span>
-      </div>
-      <div class="cc-body">
-        <div class="cc-stat-row">
-          <div class="cc-stat"><div class="cc-stat-n">85K</div><div class="cc-stat-l">LinkedIn</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">20K</div><div class="cc-stat-l">X followers</div></div>
-          <div class="cc-stat"><div class="cc-stat-n">8.1K</div><div class="cc-stat-l">YT subs</div></div>
-        </div>
-        <div class="cc-row"><span class="cc-label">Brand colours</span><span class="cc-value">Yellow · Black — distinct but not modern</span></div>
-        <div class="cc-row"><span class="cc-label">Facebook</span><span class="cc-value">420K followers. Content gets 12–15 likes. Mismatch between follower count and engagement signals audience fatigue.</span></div>
-        <div class="cc-row"><span class="cc-label">Best format</span><span class="cc-value">Podcast-style videos on YouTube getting 1K–30K views. Educational explainers.</span></div>
-        <div class="cc-row"><span class="cc-label">Key lesson</span><span class="cc-value">Big follower count ≠ engagement. They post consistently but content feels corporate. Not a style to copy.</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 5: FOLLOWER COMPARISON CHART ============ -->
-<div class="section">
-  <div class="section-label">Section 05 — Follower Comparison at a Glance</div>
-
-  <div class="chart-wrap">
-    <div class="chart-title">LinkedIn Followers — SecureMojo vs Competitors</div>
-    <div class="chart-sub">Note: follower count is context, not success. Incogni gets 1M X views with 7K followers.</div>
-    <svg viewBox="0 0 820 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:820px;">
-      <defs>
-        <linearGradient id="barGrad" x1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#00c97a" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.7"/>
-        </linearGradient>
-      </defs>
-      <!-- Background -->
-      <line x1="80" y1="20" x2="80" y2="185" stroke="#252a38" stroke-width="1"/>
-      <!-- Bars - log scale to show contrast -->
-      <!-- Norton 85000 → max width 680px -->
-      <rect x="82" y="22" width="680" height="22" rx="3" fill="rgba(245,158,11,0.2)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
-      <text x="88" y="38" fill="#f59e0b" font-size="11" font-weight="600">Norton LifeLock</text>
-      <text x="768" y="38" fill="#f59e0b" font-size="11">85,000</text>
-
-      <!-- ProtonVPN 150000 - it's bigger, show as biggest -->
-      <rect x="82" y="50" width="680" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
-      <text x="88" y="66" fill="#a78bfa" font-size="11" font-weight="600">ProtonVPN</text>
-      <text x="768" y="66" fill="#a78bfa" font-size="11">150,000</text>
-
-      <!-- Aura 29000 = 232px -->
-      <rect x="82" y="78" width="232" height="22" rx="3" fill="rgba(0,201,122,0.2)" stroke="rgba(0,201,122,0.4)" stroke-width="1"/>
-      <text x="88" y="94" fill="#00c97a" font-size="11" font-weight="600">Aura</text>
-      <text x="322" y="94" fill="#00c97a" font-size="11">29,000</text>
-
-      <!-- NordVPN 23000 = 184px -->
-      <rect x="82" y="106" width="184" height="22" rx="3" fill="rgba(96,165,250,0.2)" stroke="rgba(96,165,250,0.4)" stroke-width="1"/>
-      <text x="88" y="122" fill="#60a5fa" font-size="11" font-weight="600">NordVPN</text>
-      <text x="274" y="122" fill="#60a5fa" font-size="11">23,000</text>
-
-      <!-- Mitigata 2200 = 17.6px rounded to 18 -->
-      <rect x="82" y="134" width="18" height="22" rx="3" fill="rgba(0,201,122,0.3)" stroke="rgba(0,201,122,0.5)" stroke-width="1"/>
-      <text x="108" y="150" fill="#00c97a" font-size="11" font-weight="600">Mitigata</text>
-      <text x="200" y="150" fill="#00c97a" font-size="11">2,245 <tspan fill="#6b7280" font-size="10">(India · direct competitor)</tspan></text>
-
-      <!-- Ben 17000 = 136px -->
-      <rect x="82" y="162" width="136" height="22" rx="3" fill="rgba(96,165,250,0.15)" stroke="rgba(96,165,250,0.3)" stroke-width="1" stroke-dasharray="4,2"/>
-      <text x="88" y="178" fill="#9ca3af" font-size="11" font-weight="600">Ben (personal)</text>
-      <text x="226" y="178" fill="#9ca3af" font-size="11">17,000 <tspan fill="#6b7280" font-size="10">→ our real channel</tspan></text>
-
-      <!-- SecureMojo 246 = 2px min -->
-      <rect x="82" y="190" width="4" height="18" rx="2" fill="rgba(96,165,250,0.6)" stroke="#60a5fa" stroke-width="1.5"/>
-      <text x="94" y="203" fill="#60a5fa" font-size="11" font-weight="700">SecureMojo Company Page</text>
-      <text x="370" y="203" fill="#60a5fa" font-size="11">246 <tspan fill="#6b7280" font-size="10">— early stage, expected</tspan></text>
-    </svg>
-    <p class="inline-note">The gap is expected for a 2025 startup. The goal isn't to close it in 3 months — it's to identify which actions compound fastest (YouTube search, X virality, Ben amplification).</p>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 6: PLATFORM PLAYBOOKS ============ -->
-<div class="section">
-  <div class="section-label">Section 06 — Platform-by-Platform Content Strategy</div>
-  <p style="color:var(--text-dim);font-size:13px;margin-bottom:20px;">What works on each platform is fundamentally different. Same post mirrored everywhere is the biggest waste of effort in social media.</p>
-
-  <!-- INSTAGRAM -->
-  <div class="platform-section">
-    <div class="platform-header">
-      <div class="platform-icon" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">📸</div>
-      <div>
-        <div class="platform-name">Instagram</div>
-        <div class="platform-verdict">Current: 94 followers · 84 posts · ~6 avg likes. Highest potential for organic growth if format shifts.</div>
-      </div>
-    </div>
-    <div class="platform-body">
-      <div class="platform-grid">
-        <div class="p-col">
-          <div class="p-col-title">What Works (from research)</div>
-          <ul>
-            <li>Reels — Aura's street-interview reels get 52–66 likes on IG but 1K+ on YT. Reels are discovery.</li>
-            <li>Memes — Aura runs interactive memes ("me staring at login screen") — low effort, high shareability and save rates.</li>
-            <li>Consistent brand aesthetics — sticking to curated color schemes to create an instant premium profile feel.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">What Needs Fixing</div>
-          <ul>
-            <li>Content is heavily text-based and educational; does not inspire sharing or conversation.</li>
-            <li>No personal or behind-the-scenes content that showcases the team or makes users care.</li>
-            <li>Direct mirrored posts from Facebook ignoring IG-native aspect ratios and formats.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">Action Playbook</div>
-          <ul>
-            <li>Shift content ratio: 40% educational reels, 30% relatable cyber memes, 30% high-touch client support stories.</li>
-            <li>Launch a weekly "Mojo Quick-Tip" short reel series focusing on common phone/app privacy settings.</li>
-            <li>Collaborate with 2-3 Indian lifestyle micro-influencers to post joint security health checks.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LINKEDIN COMPANY -->
-  <div class="platform-section">
-    <div class="platform-header">
-      <div class="platform-icon" style="background:#0077b5;color:#fff;">💼</div>
-      <div>
-        <div class="platform-name">LinkedIn (Company)</div>
-        <div class="platform-verdict">Current: 246 followers · ~7 avg likes. Strong B2B trust-builder and corporate distribution node.</div>
-      </div>
-    </div>
-    <div class="platform-body">
-      <div class="platform-grid">
-        <div class="p-col">
-          <div class="p-col-title">What Works (from research)</div>
-          <ul>
-            <li>Team milestones, welcome posts, and office culture (e.g. Mitigata welcome posts getting 200+ likes).</li>
-            <li>Long-form thought leadership and professional company updates.</li>
-            <li>Structured infographics mapping executive and employee cyber risk.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">What Needs Fixing</div>
-          <ul>
-            <li>Low publishing frequency and lack of direct thought sharing.</li>
-            <li>The company page is isolated and doesn't pull reach from Ben's strong personal network.</li>
-            <li>Informal employee sharing; no system to amplify or comment on release posts.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">Action Playbook</div>
-          <ul>
-            <li>Cross-post Benild's highest-performing personal thought leadership pieces directly to the company page.</li>
-            <li>Initiate a weekly "Milestone Monday" showing team activities, onboarding, and case breakdowns.</li>
-            <li>Create a formal employee advocacy loop: all 13 team members amplify company releases within the first hour.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- X / TWITTER -->
-  <div class="platform-section">
-    <div class="platform-header">
-      <div class="platform-icon" style="background:#000000;color:#fff;border:1px solid var(--border);">𝕏</div>
-      <div>
-        <div class="platform-name">X / Twitter</div>
-        <div class="platform-verdict">Current: 9 followers · 91 posts. Flat reach due to incorrect thread formatting and lack of hooks.</div>
-      </div>
-    </div>
-    <div class="platform-body">
-      <div class="platform-grid">
-        <div class="p-col">
-          <div class="p-col-title">What Works (from research)</div>
-          <ul>
-            <li>Incogni's hook-first threads and data statistics (reaching 100k+ views with only 7k followers).</li>
-            <li>Real-time commentary on active global security breaches.</li>
-            <li>Interactive polls (NordVPN getting 12K+ votes) used to engage and capture user opinions.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">What Needs Fixing</div>
-          <ul>
-            <li>Posts are flat text links or stock graphic cards that do not trigger the X recommendation engine.</li>
-            <li>Lack of conversational hooks and threads to explain complex breaches simply.</li>
-            <li>Zero interaction with other cybersecurity accounts, journalists, or tech founders.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">Action Playbook</div>
-          <ul>
-            <li>Convert long-form news bulletins into 5-post X threads starting with a high-friction visual hook.</li>
-            <li>Post weekly interactive polls analyzing public cybersecurity habits (e.g. "Do you reuse passwords?").</li>
-            <li>Spend 15 mins daily engaging in the replies of trending tech news accounts with white-hat analyst insights.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- YOUTUBE -->
-  <div class="platform-section">
-    <div class="platform-header">
-      <div class="platform-icon" style="background:#ff0000;color:#fff;">📺</div>
-      <div>
-        <div class="platform-name">YouTube</div>
-        <div class="platform-verdict">Current: No channel exists. The largest discovery gap relative to all major competitor baselines.</div>
-      </div>
-    </div>
-    <div class="platform-body">
-      <div class="platform-grid">
-        <div class="p-col">
-          <div class="p-col-title">What Works (from research)</div>
-          <ul>
-            <li>Aura's short street-interviews (1K+ views) repurposed as Shorts.</li>
-            <li>Explainer videos and deep-dives explaining real-world security risks (Nord/Norton).</li>
-            <li>People-centric thumbnails with high-contrast text hooks instead of stock graphics.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">What Needs Fixing</div>
-          <ul>
-            <li>Total absence of long-tail search visibility on the world's second largest search engine.</li>
-            <li>No repository of video walkthroughs or guides demonstrating how SecureMojo Advice works.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">Action Playbook</div>
-          <ul>
-            <li>Create the SecureMojo channel and upload a 2-minute explainer showing the WhatsApp concierge interface in action.</li>
-            <li>Produce 5 short-form Shorts weekly repurposing Ben's thought leadership insights.</li>
-            <li>Optimize title tagging around long-tail user queries (e.g. "How to recover hacked WhatsApp account").</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FACEBOOK & THREADS -->
-  <div class="platform-section">
-    <div class="platform-header">
-      <div class="platform-icon" style="background:#3b5998;color:#fff;">👥</div>
-      <div>
-        <div class="platform-name">Facebook &amp; Threads</div>
-        <div class="platform-verdict">Current: 19 posts / 1 follower. Minimal reach. Ignored community-building features.</div>
-      </div>
-    </div>
-    <div class="platform-body">
-      <div class="platform-grid">
-        <div class="p-col">
-          <div class="p-col-title">What Works (from research)</div>
-          <ul>
-            <li>Localized safety discussion groups and parent-focused protection guidelines (Norton).</li>
-            <li>Short, casual community conversations and text-only daily updates (Threads).</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">What Needs Fixing</div>
-          <ul>
-            <li>Auto-mirroring Instagram posts directly to Facebook, which ruins text layout and link tags.</li>
-            <li>Complete lack of publishing or interaction on Threads.</li>
-          </ul>
-        </div>
-        <div class="p-col">
-          <div class="p-col-title">Action Playbook</div>
-          <ul>
-            <li>Limit Facebook to a clean business contact portal and post only major company announcements.</li>
-            <li>Utilize Threads as a casual thought journal, echoing X's short insights but in a conversational tone.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 7: ACTIONABLE RECOMMENDATIONS ============ -->
-<div class="section">
-  <div class="section-label">Section 07 — Actionable Recommendations for Founder's Office</div>
-  
-  <div class="rec-grid">
-    <div class="rec-card priority">
-      <div class="rec-number">01</div>
-      <div class="rec-title">Shift to Hook-First Content Mix</div>
-      <div class="rec-desc">Rebalance current content from 80% education to 40% education/awareness, 30% relatable human/culture stories, and 30% concrete product/solution highlights. Prioritize emotional and shareable hooks that generate organic word-of-mouth.</div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-number">02</div>
-      <div class="rec-title">Launch YouTube Search Footprint</div>
-      <div class="rec-desc">Establish a presence on YouTube. Start with short, high-concept Shorts explaining common OSINT footprints, and publish a 3-minute video showing how SecureMojo Advice functions over WhatsApp to drive conversions.</div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-number">03</div>
-      <div class="rec-title">Establish Systematic Employee Advocacy</div>
-      <div class="rec-desc">Activate the employee network. Standardize post amplification so that all team members comment and share company page updates within 60 minutes of release to trigger the LinkedIn feed algorithm.</div>
-    </div>
-    <div class="rec-card">
-      <div class="rec-number">04</div>
-      <div class="rec-title">Scale CyberPulse Community</div>
-      <div class="rec-desc">Deepen engagement in the CyberPulse LinkedIn group. Move away from admin-only updates to peer discussions, inviting members to submit recent scam messages for expert walkthroughs.</div>
-    </div>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 8: HOOK FORMULAS ============ -->
-<div class="section">
-  <div class="section-label">Section 08 — Engagement Hook Formulas</div>
-  
-  <div class="hook-grid">
-    <div class="hook-card">
-      <div class="hook-type">Exposure Hook</div>
-      <div class="hook-formula">[Public Figure Name] + [How they got hacked] + [1 simple way to prevent it]</div>
-      <div class="hook-example">"How a tech founder's public location check-in cost them ₹12 Lakhs in under 5 minutes..."</div>
-    </div>
-    <div class="hook-card">
-      <div class="hook-type">Scam Triage Hook</div>
-      <div class="hook-formula">[Immediate threat] + [Psychological trigger] + [What SecureMojo Advice did]</div>
-      <div class="hook-example">"\"Your Netflix account is locked.\" This text message fooled 10,000 users yesterday. Here's why."</div>
-    </div>
-    <div class="hook-card">
-      <div class="hook-type">POV Hook</div>
-      <div class="hook-formula">[Hacker POV] + [Common daily habit] + [Hidden security exploit]</div>
-      <div class="hook-example">"A white-hat hacker looks at your public Wi-Fi habits. Here's what I see..."</div>
-    </div>
-  </div>
-</div>
-
-<div class="section-divider"></div>
-
-<!-- ============ SECTION 9: CONTENT PILLARS ============ -->
-<div class="section">
-  <div class="section-label">Section 09 — Core Content Pillars</div>
-  
-  <div class="pillar-grid">
-    <div class="pillar-card">
-      <div class="pillar-label">Pillar 01</div>
-      <div class="pillar-name">The Hacker's Eye (POV)</div>
-      <div class="pillar-desc">Explaining security vulnerabilities from an offensive standpoint to make it approachable for normal users.</div>
-      <div class="pillar-examples">Examples: "How hackers search for your phone number; OSINT mapping teardowns."</div>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-label">Pillar 02</div>
-      <div class="pillar-name">Survival Checklists</div>
-      <div class="pillar-desc">Highly actionable, short, step-by-step checklists to handle or mitigate active digital security threats.</div>
-      <div class="pillar-examples">Examples: "The 10-minute account recovery playbook; how to secure your WhatsApp."</div>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-label">Pillar 03</div>
-      <div class="pillar-name">Scam Education</div>
-      <div class="pillar-desc">Busting common cybersecurity myths and explaining the psychology behind advanced social engineering.</div>
-      <div class="pillar-examples">Examples: "Why two-factor SMS is unsafe; how lookalike domains fool smart users."</div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- FOOTER -->
-<div class="doc-footer">
-  <div>SecureMojo &copy; 2026 <span>·</span> Founder's Office Day 5 Deliverable</div>
-  <div>Confidential <span>·</span> Internal Use Only</div>
-</div>
-
+  <!-- JAVASCRIPT STATE CONTROLLERS -->
+  <script>
+    // Tab switching controller
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      document.getElementById(tabId).classList.add('active');
+      
+      // Highlight button
+      event.currentTarget.classList.add('active');
+      
+      // Close mobile menu if open
+      document.getElementById('sidebar').classList.remove('active');
+    }
+    
+    // Mobile menu toggle
+    document.getElementById('menuToggle').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+    
+    // Competitor filter controller
+    function filterCompetitors(cat) {
+      document.querySelectorAll('.filter-bar button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+      
+      const rows = document.querySelectorAll('#competitorTable tbody tr');
+      rows.forEach(row => {
+        if (cat === 'all') {
+          row.style.display = '';
+        } else {
+          const rowCat = row.getAttribute('data-cat');
+          if (rowCat === cat || row.classList.contains('highlighted')) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      });
+    }
+    
+    // Competitor Profiles Audit Data
+    const competitorData = {
+      SecureMojo: {
+        tagline: "Personal Cyber Resilience • Bangalore • Founded 2025",
+        positioning: "Defending the individual, not the hardware. High-touch premium security concierge utilizing human expert validation over WhatsApp.",
+        palette: "Green, Black, Purple (Vibrant, structured, modern security vibe)",
+        colors: ["#00E676", "#090B0E", "#A78BFA"],
+        footprint: [
+          "LinkedIn: 246 followers, ~7 likes average. Primary corporate update node.",
+          "Instagram: 94 followers, 84 posts. Visually clean grid but low interaction.",
+          "X / Twitter: 9 followers, 91 posts. Mostly mirrored updates, flat engagement.",
+          "CyberPulse LinkedIn Group: 29 members. Shares real incident reports."
+        ],
+        works: [
+          "Cohesive corporate identity and custom brand color palette.",
+          "High content volume consistency (84 Instagram posts in short time).",
+          "Founder Benild's personal profile (17K followers) drives main organic leads."
+        ],
+        steal: [
+          "Rebalance content mix to reduce educational text and highlight human activities.",
+          "Leverage employees' combined networks to expand company reach.",
+          "Incorporate visual video Concierge walk-throughs in the main Instagram grid."
+        ]
+      },
+      Aura: {
+        tagline: "AI Consumer Safety • Boston • Series F ($1.2B Valuation)",
+        positioning: "Approachability-first consumer online protection. Combines device protection, identity safeguards, and child alerts in one premium application.",
+        palette: "Approachable deep navy, sky blue, and clean white. Avoids tech-cyber aesthetics.",
+        colors: ["#0F172A", "#60A5FA", "#FFFFFF"],
+        footprint: [
+          "Instagram: 50K followers, 1,100 posts. Uses conversational micro-reels.",
+          "LinkedIn: 29K followers. High engagement on office life and team updates.",
+          "YouTube: 7.6K subscribers, 620 videos. Strong search presence and guides."
+        ],
+        works: [
+          "De-aging Robert Downey Jr. video campaigns built massive brand awareness.",
+          "Street-interview reels asking consumers public safety questions got high shares.",
+          "Memes and conversational graphics reduce security anxiety for buyers."
+        ],
+        steal: [
+          "Use lifestyle micro-memes to drive Instagram saves and shares.",
+          "Reformat explainers into simple video formats featuring real team members.",
+          "Utilize high-contrast, text-only thumbnails on YouTube guides."
+        ]
+      },
+      Mitigata: {
+        tagline: "Full-Stack Cyber Insurance & Resilience • Bangalore • Founded 2021",
+        positioning: "Full-stack risk protection and insurance for businesses, executives, and individuals. Focused on corporate and legal risk mitigation.",
+        palette: "Green, Dark Gray, and Off-White (Corporate security vibe)",
+        colors: ["#00C264", "#1F2937", "#F9FAFB"],
+        footprint: [
+          "LinkedIn: 2.2K followers, 122 associated members. High B2B engagement.",
+          "Recent: Raised $5.9M Series A (Aug 2025) to scale distribution."
+        ],
+        works: [
+          "VP Engineering welcome post gained 246+ likes; employee onboarding is key.",
+          "Durandhar-themed cricket memes during IPL season generated 100+ likes.",
+          "Sports tournaments and team activities posts get 5x standard product engagement."
+        ],
+        steal: [
+          "Feature team events, badminton matchups, or offsites on the LinkedIn feed.",
+          "Tie complex cybersecurity threat points to local pop culture or sports stories.",
+          "Announce new corporate hires with high-touch employee profiles."
+        ]
+      },
+      NordVPN: {
+        tagline: "Network Traffic Security • Lithuania • Founded 2012",
+        positioning: "Next-generation traffic protection and malware filters. Heavy emphasis on download speed and server access.",
+        palette: "Subtle sky blue and dark slate background.",
+        colors: ["#3B82F6", "#0F172A", "#FFFFFF"],
+        footprint: [
+          "X / Twitter: 155K followers. Heavy text engagement loops.",
+          "Instagram: 51K followers. Uses product walkthrough animations."
+        ],
+        works: [
+          "Short 9-second product UI animation clips showing app updates.",
+          "Posting interactive polls on X to gauge consumer security fears.",
+          "Collaborating with tech influencers for sponsored integrations."
+        ],
+        steal: [
+          "Create short 3-9 second screen recordings of product interfaces.",
+          "Utilize polls on X to drive engagement and organic feed recommendations.",
+          "Directly prompt users with common privacy dilemmas."
+        ]
+      },
+      ProtonVPN: {
+        tagline: "Privacy Ecosystem • Switzerland • Founded 2014",
+        positioning: "High-privacy secure tunnel and encrypted email services. Aligned with global open-source advocacy and data safety.",
+        palette: "Deep purple accent on absolute dark background.",
+        colors: ["#8B5CF6", "#090B0E", "#FFFFFF"],
+        footprint: [
+          "X / Twitter: 362K followers. Privacy activism content.",
+          "LinkedIn: 150K followers. Corporate privacy updates."
+        ],
+        works: [
+          "Advocating openly for digital rights and censorship-resistance.",
+          "Leveraging Reddit, Discord, Telegram, and Threads for community loops.",
+          "Using memes about surveillance and big tech monopolies."
+        ],
+        steal: [
+          "Position the brand as an advocate for digital rights and individual freedom.",
+          "Publish simple, text-only insights criticizing surveillance habits.",
+          "Repurpose Mojo Score reports into case studies for community feedback."
+        ]
+      },
+      Incogni: {
+        tagline: "Automated Data Broker Removal • Part of Surfshark Group",
+        positioning: "Direct consumer tool that automatically contacts data brokers to remove personal records and address tracking databases.",
+        palette: "Minimal white, black, and vector blue illustrations.",
+        colors: ["#FFFFFF", "#000000", "#3B82F6"],
+        footprint: [
+          "X / Twitter: 7K followers, 3K posts. Extremely high reach density.",
+          "YouTube: 253 videos. High click-rate guide tutorials."
+        ],
+        works: [
+          "Hook-first X threads detailing data broker networks reaching 100K+ impressions.",
+          "Explainer videos answering 'where does my spam email come from?'.",
+          "Clean visual infographics displaying simple statistic diagrams."
+        ],
+        steal: [
+          "Adopt a hook-first thread layout format on X / Twitter.",
+          "Use custom vector diagrams and infographics to explain data exposures.",
+          "Focus copy entirely on immediate consumer benefits."
+        ]
+      },
+      Norton: {
+        tagline: "Consumer Cyber Safety Brand • NASDAQ: GEN",
+        positioning: "Global mass market device safety. Broad-spectrum protection covering identity, security suite, and system optimization.",
+        palette: "Vibrant yellow and black theme.",
+        colors: ["#F59E0B", "#000000", "#FFFFFF"],
+        footprint: [
+          "Facebook: 420K followers. Moderate corporate updates.",
+          "YouTube: 8.1K subscribers. Podcast explainer shows."
+        ],
+        works: [
+          "Visual podcast episodes explaining digital safety topics to families.",
+          "Mass-distribution retail bundles and pre-installed device licenses."
+        ],
+        steal: [
+          "Translate complex threat concepts into family-friendly guidelines.",
+          "Develop a structured digital safety podcast or audio segment.",
+          "Utilize retail B2B2C licensing loops."
+        ]
+      }
+    };
+    
+    // Slide-over detail drawer controllers
+    function openDrawer(compKey) {
+      const data = competitorData[compKey];
+      if (!data) return;
+      
+      document.getElementById('drawerTitle').innerText = compKey;
+      document.getElementById('drawerTagline').innerText = data.tagline;
+      document.getElementById('drawerPositioning').innerText = data.positioning;
+      
+      // Brand color palette swatches
+      document.getElementById('drawerPaletteText').innerText = data.palette;
+      const swatchesContainer = document.getElementById('drawerSwatches');
+      swatchesContainer.innerHTML = '';
+      data.colors.forEach(color => {
+        const swatch = document.createElement('div');
+        swatch.className = 'swatch';
+        swatch.style.backgroundColor = color;
+        swatchesContainer.appendChild(swatch);
+      });
+      
+      // Footprint
+      const footprintList = document.getElementById('drawerFootprint');
+      footprintList.innerHTML = '';
+      data.footprint.forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        footprintList.appendChild(li);
+      });
+      
+      // What Works
+      const worksList = document.getElementById('drawerWorks');
+      worksList.innerHTML = '';
+      data.works.forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        worksList.appendChild(li);
+      });
+      
+      // What to Steal
+      const stealList = document.getElementById('drawerSteal');
+      stealList.innerHTML = '';
+      data.steal.forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        stealList.appendChild(li);
+      });
+      
+      // Show Drawer
+      document.getElementById('drawerOverlay').classList.add('active');
+      document.getElementById('detailDrawer').classList.add('active');
+    }
+    
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.remove('active');
+      document.getElementById('detailDrawer').classList.remove('active');
+    }
+    
+    // Tabbed sub-navigation playbook
+    function switchPlaybook(playbookId) {
+      document.querySelectorAll('.playbook-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+      document.querySelectorAll('.playbook-nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      document.getElementById('playbook-' + playbookId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+    
+    // Playbook checklists local storage saving
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(box => {
+      const key = box.getAttribute('data-key');
+      // Load saved state
+      if (localStorage.getItem(key) === 'true') {
+        box.checked = true;
+        box.parentElement.classList.add('completed');
+      }
+      
+      box.addEventListener('change', function() {
+        localStorage.setItem(key, box.checked);
+        if (box.checked) {
+          box.parentElement.classList.add('completed');
+        } else {
+          box.parentElement.classList.remove('completed');
+        }
+      });
+    });
+    
+    // Content mix simulator update handler
+    function simUpdate() {
+      const edu = parseInt(document.getElementById('eduSlider').value);
+      const prod = parseInt(document.getElementById('prodSlider').value);
+      const human = parseInt(document.getElementById('humanSlider').value);
+      
+      document.getElementById('eduVal').innerText = edu + "%";
+      document.getElementById('prodVal').innerText = prod + "%";
+      document.getElementById('humanVal').innerText = human + "%";
+      
+      const sum = edu + prod + human;
+      const totalAlert = document.getElementById('totalAlert');
+      const totalVal = document.getElementById('totalVal');
+      
+      if (sum !== 100) {
+        totalAlert.style.display = 'block';
+        totalVal.innerText = sum + "%";
+      } else {
+        totalAlert.style.display = 'none';
+      }
+      
+      // Update recommendation text based on simulation
+      const simText = document.getElementById('simText');
+      const simBadge = document.getElementById('simBadge');
+      
+      if (edu >= 60 && human <= 10) {
+        simText.innerText = "Current Allocation: Heavily weighted to Threat Intel (" + edu + "%). Matches our current baseline. This keeps the feed academic, capping organic likes to ~6-7 per post. Relatability is missed.";
+        simBadge.className = "badge badge-amber";
+        simBadge.innerText = "Status: Academic Focus";
+      } else if (human >= 25 && prod >= 25 && edu <= 50) {
+        simText.innerText = "Optimal Balanced Mix (" + edu + "% Edu, " + prod + "% Prod, " + human + "% Human). Similar to fast-growing players like Aura and Mitigata. Expect up to 4x higher interaction loops and consistent brand shares.";
+        simBadge.className = "badge badge-brand";
+        simBadge.innerText = "Status: Optimal Engagement Focus";
+      } else if (prod >= 50) {
+        simText.innerText = "High-Sales Focus (" + prod + "% Prod). Content acts mostly as a pitch deck. Drives direct product education but has low organic shareability, similar to legacy corporate suites.";
+        simBadge.className = "badge badge-blue";
+        simBadge.innerText = "Status: Solutions Focus";
+      } else {
+        simText.innerText = "Custom Mix (" + edu + "% Edu, " + prod + "% Prod, " + human + "% Human). Model checks out. Keep monitor on audience feedback loop and average share actions.";
+        simBadge.className = "badge badge-purple";
+        simBadge.innerText = "Status: Balanced Focus";
+      }
+    }
+    
+    // Engagement Hook Formula generator
+    const hooks = {
+      1: {
+        type: "Exposure Setup",
+        formula: "[VIP Figure Name] + [How they got hacked] + [1 actionable solution]",
+        example: "\"How a tech founder's public hotel Wi-Fi connection cost them ₹12 Lakhs in under 5 minutes...\""
+      },
+      2: {
+        type: "Scam Triage Hook",
+        formula: "[Immediate threat] + [Psychological trigger] + [What SecureMojo Advice did]",
+        example: "\"\\\"Your Netflix account is locked.\\\" This text message fooled 10,000 users yesterday. Here's how to spot it.\""
+      },
+      3: {
+        type: "Hacker POV Exploit",
+        formula: "[Hacker POV] + [Common daily habit] + [Hidden security exploit]",
+        example: "\"A white-hat hacker scans your public digital footprint. Here is exactly what I see...\""
+      }
+    };
+    
+    function generateHook(id) {
+      document.querySelectorAll('#btnHook1, #btnHook2, #btnHook3').forEach((btn, index) => {
+        if (index + 1 === id) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      const hook = hooks[id];
+      document.getElementById('hookType').innerText = hook.type;
+      document.getElementById('hookFormula').innerText = hook.formula;
+      document.getElementById('hookExample').innerText = hook.example;
+    }
+    
+    // Upvote Recommendations Card System
+    function upvoteCard(id) {
+      const card = document.getElementById(id);
+      const voteBtn = card.querySelector('.upvote-button');
+      const voteCountSpan = card.querySelector('.vote-count');
+      
+      let votes = parseInt(card.getAttribute('data-votes'));
+      
+      if (voteBtn.classList.contains('upvoted')) {
+        votes -= 1;
+        voteBtn.classList.remove('upvoted');
+      } else {
+        votes += 1;
+        voteBtn.classList.add('upvoted');
+      }
+      
+      card.setAttribute('data-votes', votes);
+      voteCountSpan.innerText = votes;
+      
+      // Resort recommendations board
+      resortRecommendations();
+    }
+    
+    function resortRecommendations() {
+      const recList = document.getElementById('recList');
+      const cards = Array.from(recList.querySelectorAll('.rec-item-card'));
+      
+      cards.sort((a, b) => {
+        return parseInt(b.getAttribute('data-votes')) - parseInt(a.getAttribute('data-votes'));
+      });
+      
+      // Re-append in order
+      cards.forEach(card => recList.appendChild(card));
+    }
+  </script>
 </body>
 </html>
