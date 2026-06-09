@@ -8,25 +8,27 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
   
   :root {
-    --bg: #0b0f19;
-    --card-bg: #111827;
-    --border: #1f2937;
-    --border-glow: #374151;
+    --bg-dark: #060913;
+    --panel-bg: rgba(12, 17, 32, 0.85);
+    --border-color: #172033;
+    --border-hover: #263554;
     
     --text-main: #ffffff;
     --text-secondary: #e2e8f0;
-    --text-muted: #94a3b8;
+    --text-muted: #8493a8;
     
-    --brand-green: #10b981;
-    --brand-green-glow: rgba(16, 185, 129, 0.15);
-    --brand-purple: #a78bfa;
-    --brand-purple-glow: rgba(167, 139, 250, 0.15);
-    --brand-blue: #38bdf8;
-    --brand-blue-glow: rgba(56, 189, 248, 0.15);
-    --brand-amber: #f59e0b;
-    --brand-amber-glow: rgba(245, 158, 11, 0.15);
-    --brand-red: #f87171;
-    --brand-red-glow: rgba(248, 113, 113, 0.15);
+    --cyan: #38bdf8;
+    --cyan-glow: rgba(56, 189, 248, 0.15);
+    --emerald: #10b981;
+    --emerald-glow: rgba(16, 185, 129, 0.15);
+    --purple: #a78bfa;
+    --purple-glow: rgba(167, 139, 250, 0.15);
+    --amber: #fbbf24;
+    --amber-glow: rgba(251, 191, 36, 0.15);
+    --red: #f87171;
+    --red-glow: rgba(248, 113, 113, 0.15);
+    
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * {
@@ -36,13 +38,18 @@
   }
 
   body {
-    background-color: var(--bg);
+    background-color: var(--bg-dark);
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(167, 139, 250, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(6, 9, 19, 1) 0%, rgba(4, 6, 12, 1) 100%);
+    background-attachment: fixed;
     color: var(--text-secondary);
     font-family: 'Inter', sans-serif;
-    font-size: 16px;
+    font-size: 15.5px;
     line-height: 1.7;
     padding: 80px 24px;
-    max-width: 900px;
+    max-width: 920px;
     margin: 0 auto;
   }
 
@@ -51,125 +58,155 @@
     text-align: center;
     margin-bottom: 60px;
     padding-bottom: 40px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+  }
+
+  .report-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 45%;
+    width: 10%;
+    height: 1px;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
   }
 
   .report-meta {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px;
-    color: var(--brand-purple);
+    font-size: 12.5px;
+    color: var(--purple);
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     margin-bottom: 16px;
     font-weight: 600;
-  }
-
-  .report-meta span {
-    color: var(--border);
-    margin: 0 8px;
   }
 
   /* ---- H1 HEADERS ---- */
   h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text-main);
     margin-top: 56px;
     margin-bottom: 24px;
     line-height: 1.3;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     display: flex;
     align-items: center;
     gap: 12px;
-    border-bottom: 2px solid var(--border);
-    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 14px;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
   }
 
   h1.main-title {
-    font-size: 40px;
+    font-size: 36px;
     justify-content: center;
     margin-top: 0;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, #ffffff 40%, #a78bfa 100%);
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     border-bottom: none;
     padding-bottom: 0;
+    text-shadow: none;
   }
 
   /* ---- CALLOUT BOXES ---- */
   .callout {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border);
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 24px 28px;
     margin: 28px 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: var(--transition);
   }
 
   .callout:hover {
-    border-color: var(--border-glow);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
   }
 
   .callout-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text-main);
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
 
   .callout-insight {
-    border-left: 4px solid var(--brand-blue);
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.04) 0%, rgba(17, 24, 39, 0.6) 100%);
+    border-left: 4px solid var(--cyan);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 4px 0 20px rgba(56, 189, 248, 0.02);
+  }
+  .callout-insight:hover {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 20px var(--cyan-glow);
   }
 
   .callout-working {
-    border-left: 4px solid var(--brand-green);
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(17, 24, 39, 0.6) 100%);
+    border-left: 4px solid var(--emerald);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 4px 0 20px rgba(16, 185, 129, 0.02);
+  }
+  .callout-working:hover {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 20px var(--emerald-glow);
   }
 
   .callout-gaps {
-    border-left: 4px solid var(--brand-red);
-    background: linear-gradient(135deg, rgba(248, 113, 113, 0.04) 0%, rgba(17, 24, 39, 0.6) 100%);
+    border-left: 4px solid var(--red);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 4px 0 20px rgba(248, 113, 113, 0.02);
+  }
+  .callout-gaps:hover {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 20px var(--red-glow);
   }
 
   .callout-warning {
-    border-left: 4px solid var(--brand-amber);
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(17, 24, 39, 0.6) 100%);
+    border-left: 4px solid var(--amber);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 4px 0 20px rgba(251, 191, 36, 0.02);
+  }
+  .callout-warning:hover {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 20px var(--amber-glow);
   }
   
   .callout-purple {
-    border-left: 4px solid var(--brand-purple);
-    background: linear-gradient(135deg, rgba(167, 139, 250, 0.04) 0%, rgba(17, 24, 39, 0.6) 100%);
+    border-left: 4px solid var(--purple);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 4px 0 20px rgba(167, 139, 250, 0.02);
+  }
+  .callout-purple:hover {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 20px var(--purple-glow);
   }
 
   /* ---- QUOTE BLOCKS ---- */
   blockquote {
     font-family: 'Inter', sans-serif;
-    font-size: 16px;
+    font-size: 15.5px;
     font-style: italic;
-    color: var(--text-muted);
-    border-left: 3px solid var(--brand-purple);
-    padding: 8px 0 8px 24px;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--purple);
+    padding: 12px 20px;
     margin: 28px 0;
     line-height: 1.7;
-    background-color: rgba(167, 139, 250, 0.02);
-    border-radius: 0 8px 8px 0;
+    background-color: rgba(167, 139, 250, 0.03);
+    border-radius: 0 6px 6px 0;
+    border: 1px solid rgba(167, 139, 250, 0.08);
+    border-left-width: 3px;
   }
 
   /* ---- DIVIDER LINES ---- */
   hr {
     border: 0;
     height: 1px;
-    background: linear-gradient(to right, transparent, var(--border), transparent);
+    background: linear-gradient(to right, transparent, var(--border-color) 20%, var(--cyan) 50%, var(--border-color) 80%, transparent);
+    box-shadow: 0 0 8px var(--cyan-glow);
     margin: 52px 0;
   }
 
@@ -178,30 +215,32 @@
     width: 100%;
     border-collapse: collapse;
     margin: 28px 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
   }
 
   th {
     font-family: 'Space Grotesk', sans-serif;
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(255, 255, 255, 0.03);
     color: var(--text-main);
     text-align: left;
     padding: 16px 20px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-bottom: 2px solid var(--border);
+    letter-spacing: 0.12em;
+    border-bottom: 1.5px solid var(--border-color);
   }
 
   td {
     padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
     color: var(--text-secondary);
-    font-size: 15px;
+    font-size: 14.5px;
+    transition: var(--transition);
   }
 
   tr:last-child td {
@@ -209,7 +248,8 @@
   }
 
   tr:hover td {
-    background-color: rgba(255, 255, 255, 0.015);
+    background-color: rgba(255, 255, 255, 0.02);
+    color: var(--text-main);
   }
 
   /* ---- LIST STYLES ---- */
@@ -222,8 +262,8 @@
     margin-bottom: 12px;
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    font-size: 15.5px;
+    gap: 12px;
+    font-size: 15px;
   }
 
   li:last-child {
@@ -233,44 +273,48 @@
   /* Bullet styling classes */
   li.bullet-green::before {
     content: "🟢";
-    font-size: 14px;
+    font-size: 12px;
     flex-shrink: 0;
+    margin-top: 2px;
   }
 
   li.bullet-red::before {
     content: "🔴";
-    font-size: 14px;
+    font-size: 12px;
     flex-shrink: 0;
+    margin-top: 2px;
   }
 
   li.bullet-check::before {
     content: "✅";
-    font-size: 14px;
+    font-size: 13px;
     flex-shrink: 0;
+    margin-top: 1px;
   }
 
   li.bullet-cross::before {
     content: "❌";
-    font-size: 14px;
+    font-size: 13px;
     flex-shrink: 0;
+    margin-top: 1px;
   }
   
   li.bullet-arrow::before {
     content: "→";
-    color: var(--brand-blue);
+    color: var(--cyan);
     font-weight: bold;
-    font-size: 16px;
+    font-size: 15px;
     flex-shrink: 0;
   }
   
   li.bullet-star::before {
     content: "🏆";
-    font-size: 14px;
+    font-size: 13px;
     flex-shrink: 0;
   }
 
   p {
-    font-size: 16px;
+    font-size: 15.5px;
     margin-bottom: 16px;
     color: var(--text-secondary);
   }
@@ -280,19 +324,39 @@
     font-weight: 600;
   }
 
-  .text-muted-p {
+  /* ---- CASCADE CONTAINER ---- */
+  .cascade-item {
+    background-color: rgba(6, 9, 19, 0.6);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 6px;
+    transition: var(--transition);
+    cursor: default;
+  }
+  .cascade-item:hover {
+    border-color: var(--border-hover);
+    background-color: rgba(6, 9, 19, 0.85);
+  }
+
+  /* ---- FOOTER ---- */
+  .report-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
     color: var(--text-muted);
-    font-size: 14.5px;
-    margin-top: 4px;
+    font-size: 12.5px;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.1em;
   }
 
   /* ---- ANIMATIONS ---- */
   h1, .callout, table, blockquote, hr {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -301,10 +365,10 @@
       padding: 40px 16px;
     }
     h1 {
-      font-size: 26px;
+      font-size: 22px;
     }
     h1.main-title {
-      font-size: 30px;
+      font-size: 28px;
     }
     .callout {
       padding: 20px 22px;
@@ -369,7 +433,7 @@
 
   <!-- MARKET LANDSCAPE -->
   <h1>🌍 Market Landscape</h1>
-  <p class="text-highlight">The Four Markets Reviewed</p>
+  <p class="text-highlight" style="margin-bottom: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 18px;">The Four Markets Reviewed</p>
   
   <table>
     <thead>
@@ -417,7 +481,7 @@
 
   <!-- DIGITAL PRESENCE AUDIT -->
   <h1>🛡️ SecureMojo Digital Presence Audit</h1>
-  <p class="text-highlight">Current Presence</p>
+  <p class="text-highlight" style="margin-bottom: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 18px;">Current Presence</p>
   
   <table>
     <thead>
@@ -445,11 +509,11 @@
       </tr>
       <tr>
         <td>Threads</td>
-        <td><span style="color: var(--brand-amber); font-weight: 600;">Minimal</span></td>
+        <td><span style="color: var(--amber); font-weight: 600;">Minimal</span></td>
       </tr>
       <tr>
         <td>YouTube</td>
-        <td><span style="color: var(--brand-red); font-weight: 600;">Not Present</span></td>
+        <td><span style="color: var(--red); font-weight: 600;">Not Present</span></td>
       </tr>
       <tr>
         <td>CyberPulse</td>
@@ -457,7 +521,7 @@
       </tr>
       <tr>
         <td>Ben's LinkedIn</td>
-        <td><span style="color: var(--brand-green); font-weight: 600;">Strong Growth Channel</span></td>
+        <td><span style="color: var(--emerald); font-weight: 600;">Strong Growth Channel</span></td>
       </tr>
     </tbody>
   </table>
@@ -496,15 +560,15 @@
     One of the strongest findings from this research was that SecureMojo's reach is significantly larger than its company page suggests.
   </blockquote>
 
-  <p class="text-highlight">Distribution Channels</p>
+  <p class="text-highlight" style="margin-bottom: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 18px;">Distribution Channels</p>
   <div class="callout callout-purple">
     <div class="callout-title">Amplification Cascade Flow</div>
     <div class="flow-container" style="display: flex; flex-direction: column; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 600;">
-      <div style="background-color: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--brand-green); padding: 12px; border-radius: 6px;">1. Ben's LinkedIn (17K+ followers)</div>
-      <div style="background-color: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--brand-blue); padding: 12px; border-radius: 6px;">2. SecureMojo Company Page</div>
-      <div style="background-color: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--brand-purple); padding: 12px; border-radius: 6px;">3. CyberPulse</div>
-      <div style="background-color: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--brand-amber); padding: 12px; border-radius: 6px;">4. Employee Profiles</div>
-      <div style="background-color: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--brand-red); padding: 12px; border-radius: 6px;">5. Personal Networks</div>
+      <div class="cascade-item" style="border-left: 3px solid var(--emerald);">1. Ben's LinkedIn (17K+ followers)</div>
+      <div class="cascade-item" style="border-left: 3px solid var(--cyan);">2. SecureMojo Company Page</div>
+      <div class="cascade-item" style="border-left: 3px solid var(--purple);">3. CyberPulse</div>
+      <div class="cascade-item" style="border-left: 3px solid var(--amber);">4. Employee Profiles</div>
+      <div class="cascade-item" style="border-left: 3px solid var(--red);">5. Personal Networks</div>
     </div>
   </div>
 
@@ -793,11 +857,11 @@
     </thead>
     <tbody>
       <tr>
-        <td><span style="color: var(--brand-green); font-weight: 700;">🟢 Performs Best</span></td>
+        <td><span style="color: var(--emerald); font-weight: 700;">🟢 Performs Best</span></td>
         <td>Real cyber incidents, Founder stories, Team culture, Customer situations, Product demonstrations, Memes, Polls, Human experiences</td>
       </tr>
       <tr>
-        <td><span style="color: var(--brand-red); font-weight: 700;">🔴 Performs Worst</span></td>
+        <td><span style="color: var(--red); font-weight: 700;">🔴 Performs Worst</span></td>
         <td>Definitions, Generic awareness posts, Technical explanations without context, Reposted content without adaptation</td>
       </tr>
     </tbody>
